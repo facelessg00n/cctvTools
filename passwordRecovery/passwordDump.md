@@ -1,34 +1,39 @@
-# Finding the door. 
+# Stop looking at me SWANN
 ## CCTV system password recovery.
 
 Whilst it is possible to play video from many CCTV systems utilising solutions such as DME Forensics DVR examiner it can often be beneficial to recover a password for a system.
 This can:-
-	Allow access to system logs
-	Show the user locked it with a unique password and not a system password. 
-	Allow access to non suported systems quickly. 
+- Allow access to system logs
+- Show the user locked it with a unique password and not a system password. 
+- Allow access to non suported systems quickly. 
 
 
 ## Contents.
-1.
+1. Intro
 2. Built in recovery options. 
 3. Flash Based Recovery - Tools Required. 
 4. Software required. 
 5. Extracting the device.
-6. Dissasembling the firmware. 
+6. Dissasembling the firmware.
 
 Many CCTV systems are based off of similar architecture commonly featuring HiSilicon Chipsets.
 These systems have a linux based operating system stored onboard them usually on a SOIC-8 Flash IC chip. The underlying operating systems are also often common with only logos and graphics changing between them.
 
 
 
-## Built in recovery options. 
+## 2. Built in recovery options. 
 There are often factory reset options which allow and administraytor password to be reset but this makes changes to the exhibit.
 1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master reset for the device.
 The MAC can be discoveed utilising SWANN'S own tools or utilising tools such as 'scan -a'
-2.Later SWANN systems require you to call them and provide a serial number  
-3.SPD Tool app. Cheaper brands such as ZOSI have a QR code embedded onto them. This can be scanned with the "SPD Tool" app to provide a reset password.
+2. Later SWANN systems require you to call them and provide a serial number  
+3. SPD Tool app. Cheaper brands such as ZOSI have a QR code embedded onto them. This can be scanned with the "SPD Tool" app to provide a reset password.
 
-## Flash Based Recovery - Tools required. 
+This has been removed from the play store and app store so use at your own risk
+
+https://apkpure.com/spd/com.uuch.android_zxinglibrary
+
+
+## 3. Flash Based Recovery - Tools required. 
 
 The operating system on a large number of CCTV systems is stored on a SOIC-8 form factor flash IC. This IC can commonly be read whilst in situ on the board. Common brands seen are often MXIC or Winbond based chips.
 
@@ -37,15 +42,24 @@ The operating system on a large number of CCTV systems is stored on a SOIC-8 for
 2. Non commercial options.
 I reccomend purchasing a Raspberry Pi for this task. It is a small portable device which can perfom the exctraction and later dissasembly of the firmware. 
 
-SOIC -8 IC clip. This allows the Target IC to be connected to whilst remaining on its target board. often the "nose" of these clips is required to be filed down to ensutre a good conection.
+__SOIC -8 IC clip__. This allows the Target IC to be connected to whilst remaining on its target board. often the "nose" of these clips is required to be filed down to ensure a good conection.
 
-CH341A Programmer Commonly available on e-bay and other websites, this device is so cheap it could be considered disposable. Without modification however it utlises a 5v logic level to communicate with the Flash IC which is above the 3.3V logic level required. There is a slim chance this may damage the IC in the process.
+__CH341A Programmer__ Commonly available on e-bay and other websites, this device is so cheap it could be considered disposable. Without modification however it utlises a 5v logic level to communicate with the Flash IC which is above the 3.3V logic level required. There is a slim chance this may damage the IC in the process.
 
-Raspberry PI SPI pins. The Raspberry Pi has SPI bus pins exposes which can be utilised to communicate directly with a Flash IC. A power regulator should be ued however as the 3.3v rail on the Pi cannot supply neccicary current to the target board without risk. I have designed a PCB to break out these pins and make it compatible with common SOIC-8 Clips.  
+__Raspberry PI SPI pins__. The Raspberry Pi has SPI bus pins exposes which can be utilised to communicate directly with a Flash IC. A power regulator should be ued however as the 3.3v rail on the Pi cannot supply neccicary current to the target board without risk. I have designed a PCB to break out these pins and make it compatible with common SOIC-8 Clips.  
 
-GOODFET42 by Travis Goodspeed. Slightly more difficult to setup than the CH341A but a hightly versatile tool for reading flash memory devices. 
+__GOODFET42__ by Travis Goodspeed. Slightly more difficult to setup than the CH341A but a hightly versatile tool for reading flash memory devices. 
 
-## Software required
+GOODFET42 info.
+
+http://goodfet.sourceforge.net/hardware/goodfet42/
+
+Assembled version
+
+https://www.adafruit.com/product/1279
+
+
+# 4. Software required
 If you are utilising the non commercial flash reading options the below will be required.
 
 **Flashrom**  - utilised for reading the memory of the IC
@@ -59,14 +73,17 @@ https://github.com/ReFirmLabs/binwalk
 Follow these install instructions.
 https://github.com/ReFirmLabs/binwalk/blob/master/INSTALL.md
 
-A Hex editor - if you are running the reccomended Pi Bless can be installed.
 
-John the Ripper - In the case of units where the passwork is hashed.
+**A Hex editor** - if you are running the reccomended Pi, Bless can be installed.
+
+`sudo apt-get install bless`
+
+**John the Ripper** - In the case of units where the passwork is hashed.
 https://www.openwall.com/john/
 
 Knowledge of commands such as grep and strings.
 
-## Extracting the device. 
+# 5. Extracting the device. 
 Open the case of the target and disconnect the hard drive. The hard drive will draw too much power and may cause your extraction equipment to fail.
 
 In most cases the IC can be read in stiu and will not need to be removed from the board.
@@ -114,7 +131,7 @@ This will save it to a file called cctv.bin.
 I often perfom more than one extraction to ensure data integrity.
 
 
-## Disassembling the firmware.
+# 6. Disassembling the firmware.
 As above you need to make sure Binwalk is installed correctly or this is unlikley to work. There may be other tools which can perform these actions but this is what i used. 
 
 Example 1. 
