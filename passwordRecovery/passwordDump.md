@@ -21,7 +21,7 @@ These systems have a linux based operating system stored onboard them usually on
 
 
 
-## 2. Built in recovery options. 
+# 2. Built in recovery options. 
 There are often factory reset options which allow and administraytor password to be reset but this makes changes to the exhibit.
 1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master reset for the device.
 The MAC can be discoveed utilising SWANN'S own tools or utilising tools such as 'scan -a'
@@ -33,7 +33,7 @@ This has been removed from the play store and app store so use at your own risk
 https://apkpure.com/spd/com.uuch.android_zxinglibrary
 
 
-## 3. Flash Based Recovery - Tools required. 
+# 3. Flash Based Recovery - Tools required. 
 
 The operating system on a large number of CCTV systems is stored on a SOIC-8 form factor flash IC. This IC can commonly be read whilst in situ on the board. Common brands seen are often MXIC or Winbond based chips.
 
