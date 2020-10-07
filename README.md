@@ -6,4 +6,4 @@
 
 Hardware based password recovery
 
-[Password Recovery](../passwordRecovery/passwordDump.md)
+[Password Recovery](https://github.com/facelessg00n/cctvTools/blob/main/passwordRecovery/passwordDump.md)
