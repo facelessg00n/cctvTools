@@ -12,6 +12,7 @@ This can:-
 ## Contents.
 1. Intro
 2. Built in recovery options. 
+	- Utilising baked in recovery options against the system.
 3. Flash Based Recovery - Tools Required. 
 4. Software required. 
 5. Extracting the device.
@@ -21,9 +22,9 @@ This can:-
 	- Swann Unit - plaintext password in binary 
 
 Many CCTV systems are based off of similar architecture commonly featuring HiSilicon Chipsets.
-These systems have a linux based operating system onboard, usually on a SOIC-8 Flash IC chip. The underlying operating systems are also often common with only logos and graphics changing between them.
+These systems typically run on a linux based operating system. In many cases this is stored on a SOIC-8 Flash IC chip. The underlying operating systems are also often common with only logos and graphics changing between some brands.
 
-The aim of this aricle is to provide some examples of how to access further data and retrieve passwords from some of these systems.
+The aim of this aricle is to provide some examples of how to access further data and retrieve passwords from some of these systems. This knowledge and approach can then be built upon to access more systems.
 
 
 
