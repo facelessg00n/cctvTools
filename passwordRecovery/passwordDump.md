@@ -5,6 +5,7 @@ Whilst it is possible to play video from many CCTV systems utilising solutions s
 This can:-
 - Allow access to system logs
 - Show the user locked it with a unique password and not a system password. 
+- Show ownership, for example email address and name associated to the device. 
 - Allow access to non suported systems quickly. 
 
 
@@ -15,6 +16,9 @@ This can:-
 4. Software required. 
 5. Extracting the device.
 6. Dissasembling the firmware.
+- Examples 
+	- Anran Unit  - hashed password
+	- Swann Unit - plaintext password in binary 
 
 Many CCTV systems are based off of similar architecture commonly featuring HiSilicon Chipsets.
 These systems have a linux based operating system onboard, usually on a SOIC-8 Flash IC chip. The underlying operating systems are also often common with only logos and graphics changing between them.
@@ -31,11 +35,13 @@ The MAC can be discoveed utilising SWANN'S own tools or utilising tools such as 
 Plug your machine into the target device and utilise netdiscover.
 
 `netdiscover -p`
--p for passive mode, will detect the device when it is plugged into your machine. 
+
+Utilise the `-p` switch for passive mode, will detect the device when it is plugged into your machine and show its MAC address.
 
 Wireshark can also be utilsied for this task.
 
-2. Later SWANN systems require you to call them and provide a serial number  
+2. Later SWANN systems require you to call them and provide a serial number of the unit and they will then provide you with a master reset password.
+
 3. SPD Tool app. Cheaper brands such as ZOSI have a QR code embedded onto them. This can be scanned with the "SPD Tool" app to provide a reset password.
 
 This has been removed from the play store and app store so use at your own risk
@@ -43,7 +49,7 @@ This has been removed from the play store and app store so use at your own risk
 https://apkpure.com/spd/com.uuch.android_zxinglibrary
 
 
-# 3. Flash Based Recovery - Tools required. 
+# 3. Flash Based Recovery - Hardware required. 
 
 The operating system on a large number of CCTV systems is stored on a SOIC-8 form factor flash IC. This IC can commonly be read whilst in situ on the board. Common brands seen are often MXIC or Winbond based chips.
 
@@ -72,12 +78,13 @@ https://www.adafruit.com/product/1279
 # 4. Software required
 If you are utilising the non commercial flash reading options the below will be required.
 
-**Flashrom**  - utilised for reading the memory of the IC
+**Flashrom**  - Utilised for reading the memory of the IC
 https://flashrom.org/Flashrom
 
 
-**Binwalk** - utlisied for extracting the filesystem of the target.
-Ensure you follow the full instructions for installing binwalk and ensire all the extras are isntalled so suport SquashFS and JFFS or this in unlikley to work.
+**Binwalk** - Utlisied for extracting the filesystem of the target.
+
+Ensure you follow the full instructions for installing binwalk and ensure all the extras are istalled to suport SquashFS and JFFS or extraction of the full filesystem is unlikely.
 https://github.com/ReFirmLabs/binwalk
 
 Follow these install instructions.
@@ -88,7 +95,11 @@ https://github.com/ReFirmLabs/binwalk/blob/master/INSTALL.md
 
 `sudo apt-get install bless`
 
+For other machines any standard hex editor such as HxD or Winhex will be fine.
+
 **John the Ripper** - In the case of units where the passwork is hashed.
+You will need the jumbo version to support the Dahua hash type.
+
 https://www.openwall.com/john/
 
 Knowledge of commands such as grep and strings.
@@ -108,15 +119,16 @@ Pin one on the flash IC can then be identified by a dot on the pin and usually a
 Connect the SOIC-8 clip to the IC and your flash reading tool of choice making sure PIN 1 connects to PIN 1 on the IC. If you have connected the clip correctly the LED’s on the PCB should light up. It may take a few attempts to get the clip to sit correctly and it may need to be held in place for the duration of the extraction
 If you are utilising Flashrom to perform the extraction it will likely require SUDO access to operate correctly.
 
-Run flashrom with the watch command. This will allow you to confirm when it has connected correctly.
+To simplify testing the connection run Flashrom with the watch command.
 
-In the case of the CH341A programmer.
+**CH341A**
 
 `sudo watch flashrom -p ch341A`
 
-In the case of the Pi SPI pins.
+**Raspberry Pi**
+You will need to ensure you have enabled the SPI interface on your Pi.
 
-`sudo watch flashrom -p /dev........`
+`sudo watch flashrom -p linux_spi:dev=/dev/spidev0.0, spispeed=2000`
 
 If the connection is correct a flash memory chip will be idenfied.
 
@@ -125,8 +137,9 @@ If you cannot get the IC clip to secure to the device you may need to solder wir
 If the IC cannot be identified after repeated attempts and you are sure the IC clip connected properly you may have to remove the IC to communicate with it. Issues can be caused by the oboard CPU attempting to communicate with the IC as the same time as the flash reader. 
 
 ### Read the flash memory chip.
+For example utilising the CH431A programmer, an output file of cctv.bin and a log file.
 
-`flashrom -p ch341a -r cctv.bin`
+`sudo flashrom -p ch341a -r cctv.bin -o log.txt`
 
 This will save the dump to a file called cctv.bin.
 I often perfom more than one extraction to ensure data integrity.
@@ -134,6 +147,8 @@ I often perfom more than one extraction to ensure data integrity.
 
 # 6. Disassembling the firmware.
 As above you need to make sure Binwalk is installed correctly or this is unlikley to work. There may be other tools which can perform these actions but this is what I used. 
+
+
 
 # Example 1. 
 ## Anran Unit.
@@ -164,14 +179,15 @@ Then create text file called **hash.txt** in the following format which will be 
 
 `nano hash.txt`
 
-Enter the hashes into the file prefixed by $dahua$ with each hash on a new line for example.
+Enter the hashes into the file, prefixed by $dahua$, with each hash on a new line for example.
 
 $dahua$6QNMIQGe
+
 $dahua$tlJwpbo6
 
 If you are going to run a wordlist or dictionary against the file you can also place it in this folder. The location of the word list does not matter but it makes the commands easier to work with when you are starting out if it is in the same location.
 
-Open a terminal from within the Hash folder and run John the Ripper againt the hashes.
+Open a terminal from within the Hash folder and run John the Ripper against the hashes.
 
 Brute force attack.
 `john hash.txt`
@@ -216,9 +232,11 @@ Scroll through and locate the username and password.
 You can try searching for “admin” and the user name password will be stored next to that. Ensure you are searching for ASCII characters or you will return no results.
 
 ### **Utilise strings**
+This will present printable characters contained in the file and present you with the usernames and passwords below them.
 
 `strings devCfg.bin`
 ### ** Utilise Strings and GREP**
 If a username, for example "Scott" is known you can pipe the output of strings into grep to search for the username and return the password which is stored next to it.
+A2 and B2 return lines above and below the desired search term.
 
-` strings devCfg.bin | grep -B2 -A2 "Scott"`
+` strings devCfg.bin | grep -A2 -B2 "Scott"`
