@@ -17,7 +17,9 @@ This can:-
 6. Dissasembling the firmware.
 
 Many CCTV systems are based off of similar architecture commonly featuring HiSilicon Chipsets.
-These systems have a linux based operating system stored onboard them usually on a SOIC-8 Flash IC chip. The underlying operating systems are also often common with only logos and graphics changing between them.
+These systems have a linux based operating system onboard, usually on a SOIC-8 Flash IC chip. The underlying operating systems are also often common with only logos and graphics changing between them.
+
+The aim of this aricle is to provide some examples of how to access further data and retrieve passwords from some of these systems.
 
 
 
@@ -92,28 +94,19 @@ https://www.openwall.com/john/
 Knowledge of commands such as grep and strings.
 
 # 5. Extracting the device. 
-Open the case of the target and disconnect the hard drive. The hard drive will draw too much power and may cause your extraction equipment to fail.
-
 In most cases the IC can be read in stiu and will not need to be removed from the board.
+Open the case of the target unit and and disconnect the hard drive. If the hard drive remains connected too much power may be be drawn and your extraction equipment may fail or be damaged.
 
-Locate the flash IC chip and confrom its identitly via its part number. This IC is usually close to the CPU of the target device and often on the top side of the board. However if you canot find it it may be on the bottom. It is also good proactice to check the voltage on the VCC pin of the IC to ensure it is running at the same voltage as your extraction tool.
 
-Some of the newer dvices have an eMMC chip or other solutions but I have not ben required to extract one of them at this time.
+Locate the flash IC chip and confirm its identity via its part number. Commonly seen manufacturers include Winbond and MXIC. This IC is usually close to the CPU of the target device and often on the top side of the board. However if you cannot locate it some manufacturers such as Techview have been known to locate them on the bottom  side of the board. When you locate the IC It is then also good practice to check the voltage of the VCC pin on the IC to ensure it is operating at the same voltage as your extraction tool. This is commonly 3.3v.
 
-There is often power supply comopnents with the same form factor as the Flash IC. Do not connect your extraction equipment to them.
+As a word if caution there is often power supply components with the same form factor as the Flash IC. Do not connect your extraction equipment to them or damage may be caused to the target unit and your extraction equipment.
 
-Pin one on the flash IC can be identified by a dot on the pin and usually also a marking on the PCB.
+Pin one on the flash IC can then be identified by a dot on the pin and usually also a marking on the PCB.
 
-Connect the SOIC-8 clip to the IC making sure PIN 1 connects to PIN one. If you have connected it correctly the PCB should light up. It may take a few attempts to get the clip to sit correctly.
-
-If you are utilising Flashrom it will likely require SUDO to operate correctly.
-
-Open a terminal window.
-
-Create a folder for the extracted memory to be dumped to.
-
-`mkdir filename`
-`cd ./filename`
+### **Utilising FLASHROM and a SOIC 8 clip to extract in-situ**
+Connect the SOIC-8 clip to the IC and your flash reading tool of choice making sure PIN 1 connects to PIN 1 on the IC. If you have connected the clip correctly the LED’s on the PCB should light up. It may take a few attempts to get the clip to sit correctly and it may need to be held in place for the duration of the extraction
+If you are utilising Flashrom to perform the extraction it will likely require SUDO access to operate correctly.
 
 Run flashrom with the watch command. This will allow you to confirm when it has connected correctly.
 
@@ -125,17 +118,17 @@ In the case of the Pi SPI pins.
 
 `sudo watch flashrom -p /dev........`
 
-If the connection is correct you flash memory chip will be idenfied.
+If the connection is correct a flash memory chip will be idenfied.
 
-If you cannot get the IC clip to secure to the device you may need to solder wires to the legs or use a probe station to communicate with it.
+If you cannot get the IC clip to secure to the device you may need to solder wires to the legs or use a probe station to connect to it.
 
-If the IC cannot be identified after repeated attempts and you are sure the IC clip connected properly you may have to remove the IC to communicate with it. issues can be caused by the oboard CPU attempeting to communicate with the IC as the same time as the flash reader. 
+If the IC cannot be identified after repeated attempts and you are sure the IC clip connected properly you may have to remove the IC to communicate with it. Issues can be caused by the oboard CPU attempting to communicate with the IC as the same time as the flash reader. 
 
-read the flash memory chip.
+### Read the flash memory chip.
 
 `flashrom -p ch341a -r cctv.bin`
 
-This will save it to a file called cctv.bin.
+This will save the dump to a file called cctv.bin.
 I often perfom more than one extraction to ensure data integrity.
 
 
@@ -144,8 +137,7 @@ As above you need to make sure Binwalk is installed correctly or this is unlikle
 
 # Example 1. 
 ## Anran Unit.
-The passwords for this particular unit was stored in a “Dahua” hash format. At this time I only know of support in John the Ripper for craching this hash format. It is similar to MD5 and therefore you should be able to achieve a high hash rate with basic hardware. For example utilising the rockyou wordlist on an basic i5 office machine with no GPU John was able to crack the admin and user passwords in 0 seconds.
-
+The passwords for this particular unit was stored in a “Dahua” hash format. At this time I only know of support in John the Ripper for craching this hash format. It is similar to MD5 and therefore you should be able to achieve a high hash rate with basic hardware. For example utilising the rockyou wordlist on an basic i5 office machine with no GPU John was able to crack the admin and user passwords in 0 seconds. Brute forcing is also highly feasable as the keyspace is often reduced to alphanumeric characters only and the hash rate is extremely high.
 
 Extract the file with binwalk
 We will utilise `-f` to generate a log file and `-e` to extract the files.
@@ -162,7 +154,7 @@ In this Config folder there will be JSON files titled “Account1” “Account2
 
 Within these JSON files you will locate the password hashes stored at the bottom per the following example.
 
- "Password" : “5RaTV1kR"
+ "Password" : “6QNMIQGe"
 
 Open a new terminal window and create a folder called hash to work in.
 
@@ -172,12 +164,9 @@ Then create text file called **hash.txt** in the following format which will be 
 
 `nano hash.txt`
 
-enter the hashes into the file prefixed by $dahua$ with each hash on a new line for example.
+Enter the hashes into the file prefixed by $dahua$ with each hash on a new line for example.
 
 $dahua$6QNMIQGe
-
-$dahua$5RaTV1kR
-
 $dahua$tlJwpbo6
 
 If you are going to run a wordlist or dictionary against the file you can also place it in this folder. The location of the word list does not matter but it makes the commands easier to work with when you are starting out if it is in the same location.
@@ -192,6 +181,10 @@ Dictionary Attack - in the case of a dictionary called rockyou.txt located in th
 `john --wordlist=rockyou.txt hash.txt`
 
 You should then be presented with a login password for the device.
+
+$dahua$6QNMIQGe - "admin"
+
+$dahua$tlJwpbo6 - Blank password
 
 # Example 2. 
 ## Swann DVR.
