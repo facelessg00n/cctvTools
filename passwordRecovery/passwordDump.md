@@ -23,8 +23,16 @@ These systems have a linux based operating system stored onboard them usually on
 
 # 2. Built in recovery options. 
 There are often factory reset options which allow and administraytor password to be reset but this makes changes to the exhibit.
-1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master reset for the device.
-The MAC can be discoveed utilising SWANN'S own tools or utilising tools such as 'scan -a'
+1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master password reset for the device. If you follow the fogot passowrd prompts it will state that it will send you an email (which it cant do as its disconnected on your bench). You will then be greeted by a screen to enter a password, if this is limited to Hex digits 0-F chances are the MAC address of the device is the master reset password.
+
+The MAC can be discoveed utilising SWANN'S own tools or utilising tools such as netdiscover 
+Plug your machine into the target device and utilise netdiscover.
+
+`netdiscover -p`
+-p for passive mode, will detect the device when it is plugged into your machine. 
+
+Wireshark can also be utilsied for this task.
+
 2. Later SWANN systems require you to call them and provide a serial number  
 3. SPD Tool app. Cheaper brands such as ZOSI have a QR code embedded onto them. This can be scanned with the "SPD Tool" app to provide a reset password.
 
@@ -132,31 +140,92 @@ I often perfom more than one extraction to ensure data integrity.
 
 
 # 6. Disassembling the firmware.
-As above you need to make sure Binwalk is installed correctly or this is unlikley to work. There may be other tools which can perform these actions but this is what i used. 
+As above you need to make sure Binwalk is installed correctly or this is unlikley to work. There may be other tools which can perform these actions but this is what I used. 
 
-Example 1. 
-Anran Unit.
-In this example the passcode for the device was hashed with a very uncommon hash format. The "Dahua" hash. This is a weakened version of MD5 and you should be able to achieve a very high hash rate against this algorithim. 
-John the ripper has inbuilt supoort for this hash type. It is also reccomended to have a dictionary such as rockyou as a starting point. 
+# Example 1. 
+## Anran Unit.
+The passwords for this particular unit was stored in a “Dahua” hash format. At this time I only know of support in John the Ripper for craching this hash format. It is similar to MD5 and therefore you should be able to achieve a high hash rate with basic hardware. For example utilising the rockyou wordlist on an basic i5 office machine with no GPU John was able to crack the admin and user passwords in 0 seconds.
 
-exract the firmware utlising binwalk.
-`sudo binwalk -e`
-Locate a configuration file called..... and copy the password hash,
 
-create a text file in the followibngf format which will be recognised by John.
- 
+Extract the file with binwalk
+We will utilise `-f` to generate a log file and `-e` to extract the files.
 
-Example 2. Swann unit.
-In this example the passcode is stored in plain text. This unit had the latest firmware and reqired a serial number to be sent to SWANN for a Master Reset password. 
+`binwalk -f log.txt -e anran.bin`
 
-extract the bin file using binwalk
-`binwalk -e .........`
+You will be presented with a large amount of output as bin walk extracts the various file systems.
 
-You can often discover user names by powering the system on which can make grepping for strings easier in this case it was "Scott"
-`grep - r "Scott"`
+Once this is complete you will have a folder called **_anran.bin.extracted.**
 
-locates a file called.
-Devcfg......
+When you navigate this folder structure you should have the following path.
+**anran.bin.extracted/jffs2-root/fs_1/Config**
+In this Config folder there will be JSON files titled “Account1” “Account2” etc. 
 
-`sudo bless dev.....`
-search for ascii for "Scott" and the plaintext password for the user and admin are revealed.
+Within these JSON files you will locate the password hashes stored at the bottom per the following example.
+
+ "Password" : “5RaTV1kR"
+
+Open a new terminal window and create a folder called hash to work in.
+
+`mkdir hash`
+
+Then create text file called **hash.txt** in the following format which will be recognised by John. The name is not important but will simplfiy the excercise. 
+
+`nano hash.txt`
+
+enter the hashes into the file prefixed by $dahua$ with each hash on a new line for example.
+
+$dahua$6QNMIQGe
+
+$dahua$5RaTV1kR
+
+$dahua$tlJwpbo6
+
+If you are going to run a wordlist or dictionary against the file you can also place it in this folder. The location of the word list does not matter but it makes the commands easier to work with when you are starting out if it is in the same location.
+
+Open a terminal from within the Hash folder and run John the Ripper againt the hashes.
+
+Brute force attack.
+`john hash.txt`
+
+Dictionary Attack - in the case of a dictionary called rockyou.txt located in the same directory as the hash.txt file.
+
+`john --wordlist=rockyou.txt hash.txt`
+
+You should then be presented with a login password for the device.
+
+# Example 2. 
+## Swann DVR.
+
+**SWDVK-845806WL** and likley similar units. 
+
+You can often discover user names by powering the system. The system will often populate the username field, this can speed up the process of locating a password for these systems.
+
+In this example the passcode is stored in plain text in a configuration file. This unit had the latest firmware and reqired a serial number to be sent to SWANN for a Master Reset password. 
+
+Extract the bin file using binwalk.
+
+`binwalk -f log.txt -e swann.bin`
+
+Locate the file devCfg.bin which should be located at the following path.
+
+**/swann/_dump.bin-1.extracted/jffs2-root/fs_1**
+
+This file contains the usernames and passwords stored in plaintext along with the name of the DVR.
+
+You can then extract the password from the file in a number of ways.
+
+### **Open in hex editor.**
+
+`sudo bless devCfg.bin`
+
+Scroll through and locate the username and password.
+
+You can try searching for “admin” and the user name password will be stored next to that. Ensure you are searching for ASCII characters or you will return no results.
+
+### **Utilise strings**
+
+`strings devCfg.bin`
+### ** Utilise Strings and GREP**
+If a username, for example "Scott" is known you can pipe the output of strings into grep to search for the username and return the password which is stored next to it.
+
+` strings devCfg.bin | grep -B2 -A2 "Scott"`
