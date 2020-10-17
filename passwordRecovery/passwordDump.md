@@ -1,9 +1,12 @@
 # Stop looking at me SWANN
 ## CCTV system password recovery.
 
+Work in progress.......
+
 Whilst it is possible to play video from many CCTV systems utilising solutions such as DME Forensics DVR examiner it can often be beneficial to recover a password for a system.
 This can:-
 - Allow access to system logs
+	- This can show login times etc.
 - Show the user locked it with a unique password and not a system password. 
 - Show ownership, for example email address and name associated to the device. 
 - Allow access to non suported systems quickly. 
@@ -140,18 +143,29 @@ https://www.autopsy.com
 
 # 5. Extracting the device. 
 In most cases the IC can be read in stiu and will not need to be removed from the board.
-Open the case of the target unit and and disconnect the hard drive. If the hard drive remains connected too much power may be be drawn and your extraction equipment may fail or be damaged.
 
+## **Method 1 - IC dumped while on PCB**
+Whilst this is best performed on a dead and off device on the bench, I have succesfully performed extrations on powered on and running units.
 
-Locate the flash IC chip and confirm its identity via its part number. Commonly seen manufacturers include Winbond and MXIC. This IC is usually close to the CPU of the target device and often on the top side of the board. However if you cannot locate it some manufacturers such as Techview have been known to locate them on the bottom  side of the board. When you locate the IC It is then also good practice to check the voltage of the VCC pin on the IC to ensure it is operating at the same voltage as your extraction tool. This is commonly 3.3v.
+Open the case of the target unit and and disconnect the hard drive. If the hard drive remains connected too much power may be be drawn and your extraction equipment may fail or be damaged!! Be aware that this method powers up the CPU on the unit and therefore may write log files to the IC. Depending on the goals of your investigation this may be a consideration.
+
+Locate the flash IC chip and confirm its identity via its part number. You can then also confirm its pinout via its datasheet. Commonly seen manufacturers include Winbond and MXIC.
+
+ This IC is usually located close to the CPU of the target device and often on the top side of the board. However if you cannot locate it some manufacturers such as Techview have been known to locate them on the bottom side of the board under where the CPU is located. When you locate the IC It is then also good practice to check the voltage of the VCC pin on the IC to ensure it is operating at the same voltage as your extraction tool. This is commonly 3.3v.
 
 As a word if caution there is often power supply components with the same form factor as the Flash IC. Do not connect your extraction equipment to them or damage may be caused to the target unit and your extraction equipment.
 
 Pin one on the flash IC can then be identified by a dot on the pin and usually also a marking on the PCB.
 
 ### **Utilising FLASHROM and a SOIC 8 clip to extract in-situ**
-Connect the SOIC-8 clip to the IC and your flash reading tool of choice making sure PIN 1 connects to PIN 1 on the IC. If you have connected the clip correctly the LED’s on the PCB should light up. It may take a few attempts to get the clip to sit correctly and it may need to be held in place for the duration of the extraction
+Connect the SOIC-8 clip to the IC and your flash reading tool of choice making sure Pin 1 connects to Pin 1 on the IC. If you have connected the clip correctly the LED’s on the PCB should light up, as mentioned before this indicated the board has powered up. As power is being supplied by the extraction tool you need to make sure any hard drives remain disconnected. It may take a few attempts to get the clip to sit correctly and it may need to be held in place for the duration of the extraction
 If you are utilising Flashrom to perform the extraction it will likely require SUDO access to operate correctly.
+Common issues
+- SOIC 8 clip not seated - The most common issue, I reccomend filing down the nose of the clip to make it sit better.
+- insuficcent power, sometimes you need to power the device on via its own power supply, if this is the case you need to be doubly sure you have your connetions correct.
+- Unable to communicate with the flash IC, this can be caused by.
+	- The programmer is unable to communicate with the IC while the CPU is running. This will require the SPI lines to be cut or the IC removed.
+	- unidentified or incompatible IC, the IC may not be compatible with FLashrom, in this case try another tool.
 
 To simplify testing the connection run Flashrom with the watch command.
 
@@ -269,7 +283,7 @@ You can try searching for “admin” and the user name password will be stored 
 This will present printable characters contained in the file and present you with the usernames and passwords below them.
 
 `strings devCfg.bin`
-### ** Utilise Strings and GREP**
+### **Utilise Strings and GREP**
 If a username, for example "Scott" is known you can pipe the output of strings into grep to search for the username and return the password which is stored next to it.
 A2 and B2 return lines above and below the desired search term.
 
