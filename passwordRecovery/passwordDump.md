@@ -67,7 +67,16 @@ __CH341A Programmer__ Commonly available on e-bay and other websites, this devic
 
 __Raspberry PI SPI pins__. The Raspberry Pi has SPI bus pins exposes which can be utilised to communicate directly with a Flash IC. A power regulator should be ued however as the 3.3v rail on the Pi cannot supply neccicary current to the target board without risk. I have designed a PCB to break out these pins and make it compatible with common SOIC-8 Clips.  
 
-__GOODFET42__ by Travis Goodspeed. Slightly more difficult to setup than the CH341A but a hightly versatile tool for reading flash memory devices. 
+Pi, Pi Zero and SPI breakout board pictured with SOIC 8 Clip attatched.
+![Raspberry Pi](hardware/cctvTools-2.png)
+
+__GOODFET42__ by Travis Goodspeed.
+
+Slightly more difficult to setup than the CH341A but a hightly versatile tool for reading flash memory devices.
+
+GoodFET42 assembled by author pictured with SOIC-8 Adapter attatched for examining IC's which have been removed from their PCB.
+
+![Raspberry Pi](hardware/cctvTools-3.png)
 
 GOODFET42 info.
 
@@ -81,11 +90,23 @@ https://www.adafruit.com/product/1279
 # 4. Software required
 If you are utilising the non commercial flash reading options the below will be required.
 
-**Flashrom**  - Utilised for reading the memory of the IC
+## **Flashrom** 
+
+Utilised for reading the memory of the IC.
+
 https://flashrom.org/Flashrom
 
+`sudo apt-get install flashrom`
 
-**Binwalk** - Utlisied for extracting the filesystem of the target.
+Ensure you are running the latest version by running `flashrom -v`. At the time of writing the newest version is Flashrom 1.2. If you have a lower version number you may need to follow these attatched installation instructions. Higher version numbers support a wider range of IC's.
+https://flashrom.org/Downloads
+
+
+
+
+## **Binwalk** 
+
+Utilised for extracting the filesystem from the target.
 
 Ensure you follow the full instructions for installing binwalk and ensure all the extras are istalled to suport SquashFS and JFFS or extraction of the full filesystem is unlikely.
 https://github.com/ReFirmLabs/binwalk
@@ -94,18 +115,28 @@ Follow these install instructions.
 https://github.com/ReFirmLabs/binwalk/blob/master/INSTALL.md
 
 
-**A Hex editor** - if you are running the reccomended Pi, Bless can be installed.
+## **Hex editor**
+Bless is reccomended if you are utilising a Raspberry pi.
 
 `sudo apt-get install bless`
 
 For other machines any standard hex editor such as HxD or Winhex will be fine.
 
-**John the Ripper** - In the case of units where the passwork is hashed.
+## **John the Ripper**
+
+In the case of units where the passwork is hashed.
 You will need the jumbo version to support the Dahua hash type.
 
 https://www.openwall.com/john/
 
-Knowledge of commands such as grep and strings.
+## **Other**
+Knowledge of commands such as grep and strings may assist in locating passwords in dofficult devices.
+
+## **Autopsy.**
+
+Autopsy can also be utilised to analyse extracted file systems for content.
+
+https://www.autopsy.com
 
 # 5. Extracting the device. 
 In most cases the IC can be read in stiu and will not need to be removed from the board.
