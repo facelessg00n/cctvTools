@@ -63,7 +63,7 @@ __SOIC -8 IC clip__. This allows the Target IC to be connected to whilst remaini
 
 __CH341A Programmer__ Commonly available on e-bay and other websites, this device is so cheap it could be considered disposable. Without modification however it utlises a 5v logic level to communicate with the Flash IC which is above the 3.3V logic level required. There is a slim chance this may damage the IC in the process.
 
-![CH341A](/hardware/cctvTools-1.jpg)
+![CH341A](hardware/cctvTools-1.png)
 
 __Raspberry PI SPI pins__. The Raspberry Pi has SPI bus pins exposes which can be utilised to communicate directly with a Flash IC. A power regulator should be ued however as the 3.3v rail on the Pi cannot supply neccicary current to the target board without risk. I have designed a PCB to break out these pins and make it compatible with common SOIC-8 Clips.  
 
