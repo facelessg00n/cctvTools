@@ -1,8 +1,11 @@
 # Stop looking at me SWANN
 ## CCTV system password recovery.
+![intro](screenshots/swann.png)
+## Work in progress.......
 
-Work in progress.......
+As always, this is advice recieved from some random Australian on the internet. Methodology should be tested on non critical devices and results may vary.
 
+## Why do this?
 Whilst it is possible to play video from many CCTV systems utilising solutions such as DME Forensics DVR examiner it can often be beneficial to recover a password for a system.
 This can:-
 - Allow access to system logs
@@ -19,16 +22,33 @@ This can:-
 3. Flash Based Recovery - Tools Required. 
 4. Software required. 
 5. Extracting the device.
+	- Method 1 - IC reamins on PCB
+		- Common issues 
 6. Dissasembling the firmware.
 - Examples 
 	- Anran Unit  - hashed password
-	- Swann Unit - plaintext password in binary 
+	- Swann Unit - plaintext password in binary
+	- Swann Unit - plaintext password in a different binary 
+
+# 1. Intro
 
 Many CCTV systems are based off of similar architecture commonly featuring HiSilicon Chipsets.
-These systems typically run on a linux based operating system. In many cases this is stored on a SOIC-8 Flash IC chip. The underlying operating systems are also often common with only logos and graphics changing between some brands.
+These systems typically run on a linux based operating system. In many cases this is stored on a SOIC-8 SPI Flash IC chip. The underlying operating systems are also often common with only logos and graphics changing between some brands.
 
 The aim of this aricle is to provide some examples of how to access further data and retrieve passwords from some of these systems. This knowledge and approach can then be built upon to access more systems.
 
+Onboard MXIC flash memory chip in a SWANN DVR.
+
+![PCB](hardware/pcb1.png)
+
+## Pinout
+
+The below is the pinout for common SPI flash chips. This typically remains consistent but you can always refer to a datasheet to check.
+
+Whilst checking the datasheet you can also confirm the operating voltage of the IC. 
+
+
+![Pinout](hardware/winbond.png)
 
 
 # 2. Built in recovery options. 
@@ -55,20 +75,35 @@ https://apkpure.com/spd/com.uuch.android_zxinglibrary
 
 # 3. Flash Based Recovery - Hardware required. 
 
-The operating system on a large number of CCTV systems is stored on a SOIC-8 form factor flash IC. This IC can commonly be read whilst in situ on the board. Common brands seen are often MXIC or Winbond based chips.
+The operating system on a large number of CCTV systems is stored on a SOIC-8 form factor flash IC. This IC can commonly be read whilst in situ on the board. Common brands seen are often MXIC (Macronix) or Winbond brand chips.
 
 1. Commercial Flash memory readers. 
+- I have not tested these options but a number of commerical SPI flash readers exist such as. 
+	- Flashcat.
+	https://www.embeddedcomputers.net/products/FlashcatUSB/
+	- Segger J-Flash https://www.segger.com/products/debug-probes/j-link/tools/j-flash-spi/
+		- In my experience with using Segger equipment for other activities it does require a reasonable amount of technical knowledge.
+
 
 2. Non commercial options.
-I reccomend purchasing a Raspberry Pi for this task. It is a small portable device which can perfom the exctraction and later dissasembly of the firmware. 
+I reccomend purchasing a Raspberry Pi for this task. It is a small portable device which can perfom the exctraction and later dissasembly of the firmware, hardware and software required to assemble the kit is listed below.
 
-__SOIC -8 IC clip__. This allows the Target IC to be connected to whilst remaining on its target board. often the "nose" of these clips is required to be filed down to ensure a good conection.
+__SOIC -8 IC clip__. 
 
-__CH341A Programmer__ Commonly available on e-bay and other websites, this device is so cheap it could be considered disposable. Without modification however it utlises a 5v logic level to communicate with the Flash IC which is above the 3.3V logic level required. There is a slim chance this may damage the IC in the process.
+This allows the Target IC to be connected to whilst remaining on its target board. often the "nose" of these clips is required to be filed down to ensure a good conection.
+
+__CH341A Programmer__ 
+
+Commonly available on e-bay and other websites, this device is so cheap it could be considered disposable. Without modification however it utlises a 5v logic level to communicate with the Flash IC which is above the 3.3V logic level required. There is a slim chance this may damage the IC in the process.
+This device also supplied 3.3v to the target board.
 
 ![CH341A](hardware/cctvTools-1.png)
 
-__Raspberry PI SPI pins__. The Raspberry Pi has SPI bus pins exposes which can be utilised to communicate directly with a Flash IC. A power regulator should be ued however as the 3.3v rail on the Pi cannot supply neccicary current to the target board without risk. I have designed a PCB to break out these pins and make it compatible with common SOIC-8 Clips.  
+__Raspberry PI SPI pins__. 
+
+The Raspberry Pi has SPI bus pins exposes which can be utilised to communicate directly with a Flash IC. A power regulator should be ued however as the 3.3v rail on the Pi cannot supply necessary current to the target board without risk. I have designed a PCB to break out these pins and make it compatible with common SOIC-8 Clips. Beyond the commercial readers this is the preffered method of reading the flash IC's and is much faster than the CH431A.
+
+## *** PCB / Design will be available shortly ****
 
 Pi, Pi Zero and SPI breakout board pictured with SOIC 8 Clip attatched.
 ![Raspberry Pi](hardware/cctvTools-2.png)
@@ -160,23 +195,31 @@ Pin one on the flash IC can then be identified by a dot on the pin and usually a
 ### **Utilising FLASHROM and a SOIC 8 clip to extract in-situ**
 Connect the SOIC-8 clip to the IC and your flash reading tool of choice making sure Pin 1 connects to Pin 1 on the IC. If you have connected the clip correctly the LED’s on the PCB should light up, as mentioned before this indicated the board has powered up. As power is being supplied by the extraction tool you need to make sure any hard drives remain disconnected. It may take a few attempts to get the clip to sit correctly and it may need to be held in place for the duration of the extraction
 If you are utilising Flashrom to perform the extraction it will likely require SUDO access to operate correctly.
-Common issues
+
+## Common issues
 - SOIC 8 clip not seated - The most common issue, I reccomend filing down the nose of the clip to make it sit better.
-- insuficcent power, sometimes you need to power the device on via its own power supply, if this is the case you need to be doubly sure you have your connetions correct.
+	- Monitor the onboard LED's on the PCB, if they dim or go out you have probably slipped with the clip. Flashrom will not usually identify this and you will need to start the process again.
+		- Also if you are using the Ch341A programmer and this happens it can cause it to get "stuck". You will notice the green data light remain on even when the IC clip is disconnected. You will need to momentarily unplug the device and plug it in again to get it working properly again.
+- Insuficcent power, sometimes you need to power the device on via its own power supply, if this is the case you need to be doubly sure you have your connetions correct.
 - Unable to communicate with the flash IC, this can be caused by.
 	- The programmer is unable to communicate with the IC while the CPU is running. This will require the SPI lines to be cut or the IC removed.
 	- unidentified or incompatible IC, the IC may not be compatible with FLashrom, in this case try another tool.
+- Flashrom will not often identify a break in connection which has interrupted the download. If it appears stuck or is taking more than a couple of minutes with the Pi it may be worth cancelling the process and running it again.
 
-To simplify testing the connection run Flashrom with the watch command.
+To simplify testing the connection run Flashrom with the watch command and it will check every 2 seconds for a connection and identify the IC.
 
 **CH341A**
 
 `sudo watch flashrom -p ch341A`
 
-**Raspberry Pi**
-You will need to ensure you have enabled the SPI interface on your Pi.
+Flashrom will identify when a chip is detected and attempt to identify its type. you will need to utilise the identified IC to download it.
 
-`sudo watch flashrom -p linux_spi:dev=/dev/spidev0.0, spispeed=2000`
+**Raspberry Pi**
+You will need to ensure you have enabled the SPI interface on your Pi, under the Pi Settings / interfaces menu.
+
+spispeed sets the communication speed in khz. 8000 (which is 8mhz) is the highest the Pi can achieve. I have had better results setting the speed slightly slower. 
+
+`sudo watch flashrom -p linux_spi:dev=/dev/spidev0.0, spispeed=5000`
 
 If the connection is correct a flash memory chip will be idenfied.
 
@@ -187,9 +230,17 @@ If the IC cannot be identified after repeated attempts and you are sure the IC c
 ### Read the flash memory chip.
 For example utilising the CH431A programmer, an output file of cctv.bin and a log file.
 
-`sudo flashrom -p ch341a -r cctv.bin -o log.txt`
+The -c switch is utilised with the IC identified in the above step.
+
+`sudo flashrom -p ch341a -c ****** -r cctv.bin -o log.txt`
+
+Or utilising the Pi
+
+
+`sudo flashrom -p linux_spi:dev=/dev/spidev0.0, spispeed=5000 -c ***** -r cctv.bin -o log.txt`
 
 This will save the dump to a file called cctv.bin.
+
 I often perfom more than one extraction to ensure data integrity.
 
 
@@ -200,7 +251,7 @@ As above you need to make sure Binwalk is installed correctly or this is unlikle
 
 # Example 1. 
 ## Anran Unit.
-The passwords for this particular unit was stored in a “Dahua” hash format. At this time I only know of support in John the Ripper for craching this hash format. It is similar to MD5 and therefore you should be able to achieve a high hash rate with basic hardware. For example utilising the rockyou wordlist on an basic i5 office machine with no GPU John was able to crack the admin and user passwords in 0 seconds. Brute forcing is also highly feasable as the keyspace is often reduced to alphanumeric characters only and the hash rate is extremely high.
+The passwords for this particular unit was stored in a “Dahua” hash format. At this time I only know of support for this hash within John the Ripper for cracking this hash format. It is similar to MD5 and therefore you should be able to achieve a high hash rate with basic hardware. For example utilising the rockyou wordlist on an basic i5 office machine with no GPU John was able to crack the admin and user passwords in 0 seconds. Brute forcing is also highly feasable as the keyspace is often reduced to alphanumeric characters only and the hash rate is extremely high.
 
 Extract the file with binwalk
 We will utilise `-f` to generate a log file and `-e` to extract the files.
@@ -272,19 +323,53 @@ This file contains the usernames and passwords stored in plaintext along with th
 You can then extract the password from the file in a number of ways.
 
 ### **Open in hex editor.**
+navigate to the folder containing the file and open the file in bless. 
+
 
 `sudo bless devCfg.bin`
 
 Scroll through and locate the username and password.
 
-You can try searching for “admin” and the user name password will be stored next to that. Ensure you are searching for ASCII characters or you will return no results.
+You can try searching for “admin” and the user name password will be stored next to that. 
+- Ensure you are searching for ASCII characters or you will return no results.
 
 ### **Utilise strings**
 This will present printable characters contained in the file and present you with the usernames and passwords below them.
 
 `strings devCfg.bin`
 ### **Utilise Strings and GREP**
-If a username, for example "Scott" is known you can pipe the output of strings into grep to search for the username and return the password which is stored next to it.
-A2 and B2 return lines above and below the desired search term.
+As the username admin is usually always present we can also perform the action utilising strings and grep.
 
-` strings devCfg.bin | grep -A2 -B2 "Scott"`
+Locate the file.
+
+`find -name "*devCfg*"`
+
+copy the path where the path was located and utilise strings and grep. The -A 4 option will return 4 lines after "admin" and therefore also reveal if there is any other users and their password.
+
+`strings ./jffs2-root/fs_1/devCfg.bin | grep -A 4 "admin"`
+
+![strings_swann2](screenshots/swann1.png)
+
+
+
+# Example 3
+## Swann DVR
+**NVW-1080** and likley similar models.
+
+This model also stores its user credentials in plaintext, but is slightly different from the one above. This version of firmware presented the user with the "Super Password" reset method.
+
+As per before. Extract the firmware from the dumped binary file.
+
+binwalk -f log.txt -e swann2.bin
+
+Locate a file called "usr.cfg"
+
+`find -name "*usr.cfg"`
+This can usually be found in.
+
+**/jffs2-root/fs_1/usr.cfg**
+
+Utilise strings to extract the password. Alternativley this can be completed in a hex editor.
+
+![strings_swann2](screenshots/swann2.png)
+
