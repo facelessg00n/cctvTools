@@ -162,7 +162,7 @@ For other machines any standard hex editor such as HxD or Winhex will be fine.
 
 ## **John the Ripper**
 
-In the case of units where the passwork is hashed.
+In the case of units where the password is hashed.
 You will need the jumbo version to support the Dahua hash type.
 
 https://www.openwall.com/john/
@@ -289,6 +289,7 @@ If you are going to run a wordlist or dictionary against the file you can also p
 Open a terminal from within the Hash folder and run John the Ripper against the hashes.
 
 Brute force attack.
+
 `john hash.txt`
 
 Dictionary Attack - in the case of a dictionary called rockyou.txt located in the same directory as the hash.txt file.
@@ -317,6 +318,10 @@ Extract the bin file using binwalk.
 Locate the file devCfg.bin which should be located at the following path.
 
 **/swann/_dump.bin-1.extracted/jffs2-root/fs_1**
+
+You can also locate it with the below.
+
+`find -name "*devCfg*"`
 
 This file contains the usernames and passwords stored in plaintext along with the name of the DVR.
 
@@ -360,7 +365,7 @@ This model also stores its user credentials in plaintext, but is slightly differ
 
 As per before. Extract the firmware from the dumped binary file.
 
-binwalk -f log.txt -e swann2.bin
+`binwalk -f log.txt -e swannw.bin`
 
 Locate a file called "usr.cfg"
 
