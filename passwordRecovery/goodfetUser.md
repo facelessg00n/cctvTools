@@ -1,6 +1,15 @@
 ## User guide for the goodfet 42
 
-Installation
+https://github.com/travisgoodspeed/goodfet
+
+http://goodfet.sourceforge.net/apps/spi/
+
+SPI Pinout
+
+http://goodfet.sourceforge.net/clients/goodfetspiflash/
+
+
+## Installation
 
 `git clone https://github.com/travisgoodspeed/goodfet/`
 
@@ -9,6 +18,7 @@ Installation
 `(cd client && sudo make link)`
 
 Not you should be able to run `goodfet` from your command line. 
+## Commands
 
 ### **Chip info**
 `goodfet.spiflash info` 
