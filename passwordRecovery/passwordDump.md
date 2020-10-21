@@ -26,9 +26,10 @@ This can:-
 		- Common issues 
 6. Dissasembling the firmware.
 - Examples 
-	- Anran Unit  - hashed password
-	- Swann Unit - plaintext password in binary
-	- Swann Unit - plaintext password in a different binary 
+	- Anran Unit  - Hashed password
+	- Floureon Unit - SOIC-16 IC and hashed password
+	- Swann Unit - Plaintext password in binary file.
+	- Swann Unit - Plaintext password in a different binary file. 
 
 # 1. Intro
 
@@ -110,7 +111,7 @@ Pi, Pi Zero and SPI breakout board pictured with SOIC 8 Clip attatched.
 
 __GOODFET42__ by Travis Goodspeed.
 
-Slightly more difficult to setup than the CH341A but a hightly versatile tool for reading flash memory devices.
+Slightly more difficult to setup than the CH341A but a hightly versatile tool for reading flash memory devices. This device seems to perform better when IC's are removed as it does not seem to supply enough power to power up the whole PCB.
 
 GoodFET42 assembled by author pictured with SOIC-8 Adapter attatched for examining IC's which have been removed from their PCB.
 
@@ -234,12 +235,22 @@ The -c switch is utilised with the IC identified in the above step.
 
 `sudo flashrom -p ch341a -c ****** -r cctv.bin -o log.txt`
 
-Or utilising the Pi
+### Utilising the Pi
 
 
 `sudo flashrom -p linux_spi:dev=/dev/spidev0.0, spispeed=5000 -c ***** -r cctv.bin -o log.txt`
 
 This will save the dump to a file called cctv.bin.
+
+### Utilising the goodfet.
+
+Get the chip info
+
+`goodfet.spiflash info`
+
+Dump the IC
+
+`goodfet.spiflash dump cctv.bin`
 
 I often perfom more than one extraction to ensure data integrity.
 
@@ -302,7 +313,51 @@ $dahua$6QNMIQGe - "admin"
 
 $dahua$tlJwpbo6 - Blank password
 
-# Example 2. 
+# Example 2
+## Floureon Unit. 
+
+This unit is similar to the Anran unit in that it also hashes the passwords using the Dahua hash.
+
+
+However, this unit had a SOIC-16 IC onboard rather than the usual SOIC-8. It also appeared to "Lock" accounts if the wrong password was attempted a number of times. 
+
+The account files were located at the following paths.
+
+jffs2-root-7/fs_1/Config/Account1
+
+jffs2-root-7/fs_1/Config/Account2
+
+
+### **SOIC-16 IC from MXIC**
+![Floureon PCB](screenshots/floureon2.png)
+
+## Pinout for SOIC-16
+
+![Floureon PCB](screenshots/mxic.png)
+
+### **IC Clip attatched to PCB**
+This unit was also powered on via its power pack to download it. I waited for the unit to complete its boot cycle then conencted the IC clip to dump the memmory.
+
+![Floureon PCB](screenshots/floureon1.png)
+
+jffs2-root-7/fs_1/Config/Account1
+jffs2-root-7/fs_1/Config/Account2
+
+## Other Artifacts of intetest. 
+
+
+A log file is extractable from the unit
+
+/jffs2-root-2/fs_1/Log
+
+Example log file entries cleansed of user name.
+
+Log:16-7-16 20:36:18[System],[LogOut],[UserName ,GUI]
+
+Log:16-7-16 20:36:49[System],[LogIn],[UserName ,GUI]
+
+
+# Example 3. 
 ## Swann DVR.
 
 **SWDVK-845806WL** and likley similar units. 
@@ -357,7 +412,7 @@ copy the path where the path was located and utilise strings and grep. The -A 4 
 
 
 
-# Example 3
+# Example 4
 ## Swann DVR
 **NVW-1080** and likley similar models.
 
