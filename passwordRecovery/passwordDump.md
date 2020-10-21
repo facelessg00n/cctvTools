@@ -53,8 +53,10 @@ Whilst checking the datasheet you can also confirm the operating voltage of the 
 
 
 # 2. Built in recovery options. 
-There are often factory reset options which allow and administraytor password to be reset but this makes changes to the exhibit.
-1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master password reset for the device. If you follow the fogot passowrd prompts it will state that it will send you an email (which it cant do as its disconnected on your bench). You will then be greeted by a screen to enter a password, if this is limited to Hex digits 0-F chances are the MAC address of the device is the master reset password.
+There are often factory reset options which allow and administrator password to be reset but this makes changes to the unit.
+1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master password reset for the device. 
+
+If you follow the fogot passowrd prompts it will state that it will send you an email (which it cant do as its disconnected on your bench). You will then be greeted by a screen to enter a password, if this is limited to Hex digits 0-F chances are the MAC address of the device is the master reset password.
 
 The MAC can be discoveed utilising SWANN'S own tools or utilising tools such as netdiscover 
 Plug your machine into the target device and utilise netdiscover.
@@ -73,6 +75,12 @@ This has been removed from the play store and app store so use at your own risk
 
 https://apkpure.com/spd/com.uuch.android_zxinglibrary
 
+4. Default Passwords.
+Floureon - leave blank
+SWANN - 12345
+
+
+
 
 # 3. Flash Based Recovery - Hardware required. 
 
@@ -87,7 +95,7 @@ The operating system on a large number of CCTV systems is stored on a SOIC-8 for
 
 
 2. Non commercial options.
-I reccomend purchasing a Raspberry Pi for this task. It is a small portable device which can perfom the exctraction and later dissasembly of the firmware, hardware and software required to assemble the kit is listed below.
+I reccomend purchasing a Raspberry Pi for this task. It is a small portable device which can perfom the extraction and later dissasembly of the firmware, hardware and software required to assemble the kit is listed below.
 
 __SOIC -8 IC clip__. 
 
@@ -96,13 +104,19 @@ This allows the Target IC to be connected to whilst remaining on its target boar
 __CH341A Programmer__ 
 
 Commonly available on e-bay and other websites, this device is so cheap it could be considered disposable. Without modification however it utlises a 5v logic level to communicate with the Flash IC which is above the 3.3V logic level required. There is a slim chance this may damage the IC in the process.
-This device also supplied 3.3v to the target board.
+This device also supplied 3.3v to the target board. 
+
+Read Time: typically 1-5 minutes.
 
 ![CH341A](hardware/cctvTools-1.png)
 
 __Raspberry PI SPI pins__. 
 
-The Raspberry Pi has SPI bus pins exposes which can be utilised to communicate directly with a Flash IC. A power regulator should be ued however as the 3.3v rail on the Pi cannot supply necessary current to the target board without risk. I have designed a PCB to break out these pins and make it compatible with common SOIC-8 Clips. Beyond the commercial readers this is the preffered method of reading the flash IC's and is much faster than the CH431A.
+The Raspberry Pi has SPI pins exposed which can be utilised to communicate directly with a Flash IC. A power regulator should be used as the 3.3v rail on the Pi cannot supply necessary current to the target board without risk of damage.
+
+ I have designed a PCB to break out these pins and make it compatible with common SOIC-8 Clips and supply up to 1A of 3.3v power. Beyond the commercial readers this is the preffered method of reading the flash IC's and is much faster than the CH431A.
+
+ Read time: Less than 1 minute.
 
 ## *** PCB / Design will be available shortly ****
 
@@ -145,17 +159,17 @@ https://flashrom.org/Downloads
 
 ## **Binwalk** 
 
-Utilised for extracting the filesystem from the target.
+Utilised for extracting the filesystem from memory extraction.
 
 Ensure you follow the full instructions for installing binwalk and ensure all the extras are istalled to suport SquashFS and JFFS or extraction of the full filesystem is unlikely.
 https://github.com/ReFirmLabs/binwalk
 
-Follow these install instructions.
+**Follow all of these install instructions.**
 https://github.com/ReFirmLabs/binwalk/blob/master/INSTALL.md
 
 
 ## **Hex editor**
-Bless is reccomended if you are utilising a Raspberry pi.
+Bless is reccomended if you are utilising a Raspberry Pi.
 
 `sudo apt-get install bless`
 
@@ -178,12 +192,12 @@ Autopsy can also be utilised to analyse extracted file systems for content.
 https://www.autopsy.com
 
 # 5. Extracting the device. 
-In most cases the IC can be read in stiu and will not need to be removed from the board.
+In most cases the IC can be read in stiu and will not need to be removed from the PCB in the target device.
 
 ## **Method 1 - IC dumped while on PCB**
 Whilst this is best performed on a dead and off device on the bench, I have succesfully performed extrations on powered on and running units.
 
-Open the case of the target unit and and disconnect the hard drive. If the hard drive remains connected too much power may be be drawn and your extraction equipment may fail or be damaged!! Be aware that this method powers up the CPU on the unit and therefore may write log files to the IC. Depending on the goals of your investigation this may be a consideration.
+Open the case of the target unit and and disconnect the hard drive. As the unit is gping to first be powered via the extraction equipment, if the hard drive remains connected too much power may be be drawn and your extraction equipment may fail or be damaged!! Be aware that this method powers up the CPU on the unit and therefore may write log files to the IC. Depending on the goals of your investigation this may be a consideration.
 
 Locate the flash IC chip and confirm its identity via its part number. You can then also confirm its pinout via its datasheet. Commonly seen manufacturers include Winbond and MXIC.
 
@@ -213,7 +227,7 @@ To simplify testing the connection run Flashrom with the watch command and it wi
 
 `sudo watch flashrom -p ch341A`
 
-Flashrom will identify when a chip is detected and attempt to identify its type. you will need to utilise the identified IC to download it.
+Flashrom will identify when a chip is detected and attempt to identify its type. You will need to utilise the identified IC to download it.
 
 **Raspberry Pi**
 You will need to ensure you have enabled the SPI interface on your Pi, under the Pi Settings / interfaces menu.
@@ -229,6 +243,8 @@ If you cannot get the IC clip to secure to the device you may need to solder wir
 If the IC cannot be identified after repeated attempts and you are sure the IC clip connected properly you may have to remove the IC to communicate with it. Issues can be caused by the oboard CPU attempting to communicate with the IC as the same time as the flash reader. 
 
 ### Read the flash memory chip.
+
+### Using the CH341A
 For example utilising the CH431A programmer, an output file of cctv.bin and a log file.
 
 The -c switch is utilised with the IC identified in the above step.
@@ -242,7 +258,7 @@ The -c switch is utilised with the IC identified in the above step.
 
 This will save the dump to a file called cctv.bin.
 
-### Utilising the goodfet.
+### Utilising the Goodfet42.
 
 Get the chip info
 
@@ -262,7 +278,7 @@ As above you need to make sure Binwalk is installed correctly or this is unlikle
 
 # Example 1. 
 ## Anran Unit.
-The passwords for this particular unit was stored in a “Dahua” hash format. At this time I only know of support for this hash within John the Ripper for cracking this hash format. It is similar to MD5 and therefore you should be able to achieve a high hash rate with basic hardware. For example utilising the rockyou wordlist on an basic i5 office machine with no GPU John was able to crack the admin and user passwords in 0 seconds. Brute forcing is also highly feasable as the keyspace is often reduced to alphanumeric characters only and the hash rate is extremely high.
+The passwords for this particular unit was stored in a “Dahua” hash format. At this time I only know of support for this hash within John the Ripper for cracking this hash format. It is similar to MD5 and therefore you should be able to achieve a high hash rate with basic hardware. For example utilising the rockyou wordlist on an basic i5 office machine with no GPU John was able to crack the admin and user passwords in 0 seconds. Brute forcing is also highly feasable as the keyspace is often reduced to alphanumeric characters only and the hash rate is extremely high. Many passwords are recovered in seconds with this method.
 
 Extract the file with binwalk
 We will utilise `-f` to generate a log file and `-e` to extract the files.
@@ -274,7 +290,12 @@ You will be presented with a large amount of output as bin walk extracts the var
 Once this is complete you will have a folder called **_anran.bin.extracted.**
 
 When you navigate this folder structure you should have the following path.
-**anran.bin.extracted/jffs2-root/fs_1/Config**
+**_anran.bin.extracted/jffs2-root/fs_1/Config**
+
+If it is not located there search the exctracted file systme using the following.
+
+`find -name *Account*`
+
 In this Config folder there will be JSON files titled “Account1” “Account2” etc. 
 
 Within these JSON files you will locate the password hashes stored at the bottom per the following example.
