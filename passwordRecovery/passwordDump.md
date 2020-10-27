@@ -30,6 +30,7 @@ This can:-
 	- Floureon Unit - SOIC-16 IC and hashed password
 	- Swann Unit - Plaintext password in binary file.
 	- Swann Unit - Plaintext password in a different binary file. 
+	- HiWatch
 
 # 1. Intro
 
@@ -454,3 +455,31 @@ Utilise strings to extract the password. Alternativley this can be completed in 
 
 ![strings_swann2](screenshots/swann2.png)
 
+# Example 5
+## Hiwatch unit
+Test unit
+
+NVR-104-E/4P
+
+This example has been untested as the unit I pulled this from was unable to be powered up.
+
+However this unit contains the same devCfg file as example 2.
+
+`binwalk -e -f log.txt hiwatch.bin`
+
+![hiwatch 1](screenshots/hiwatch1.png)
+
+If the 30000 file is opened in a hex editor or analysed with strings a number of account and potential password strings can be located.
+
+
+To locate the devCfg file we need to enable the matryoshka feature.
+
+ -M, --matryoshka             Recursively scan extracted files
+
+`binwalk -M -e -f log1.txt hiwatch.bin`
+
+![hiwatch 2](screenshots/hiwatch2.png)
+
+You may need to utilise sudo permissions to open the file for example.
+
+`sudo strings ./_30000.extracted/cfg/devCfg.bin`
