@@ -1,11 +1,20 @@
 # Stop looking at me SWANN
-## CCTV system password recovery.
+
+## CCTV system password recovery 
+
 ![intro](screenshots/swann.png)
+&nbsp;
+
 ## Work in progress.......
+
+&nbsp;
 
 As always, this is advice recieved from some random Australian on the internet. Methodology should be tested on non critical devices and results may vary.
 
+&nbsp;
+
 ## Why do this?
+
 Whilst it is possible to play video from many CCTV systems utilising solutions such as DME Forensics DVR examiner it can often be beneficial to recover a password for a system.
 This can:-
 - Allow access to system logs
@@ -14,23 +23,28 @@ This can:-
 - Show ownership, for example email address and name associated to the device. 
 - Allow access to non suported systems quickly. 
 
+&nbsp;
 
-## Contents.
+## Contents
+
 1. Intro
-2. Built in recovery options. 
+2. Built in recovery options.
 	- Utilising baked in recovery options against the system.
-3. Flash Based Recovery - Tools Required. 
+3. Flash Based Recovery - Tools Required.
 4. Software required. 
 5. Extracting the device.
 	- Method 1 - IC reamins on PCB
 		- Common issues 
 6. Dissasembling the firmware.
 - Examples 
-	- Anran Unit  - Hashed password
-	- Floureon Unit - SOIC-16 IC and hashed password
-	- Swann Unit - Plaintext password in binary file.
-	- Swann Unit - Plaintext password in a different binary file. 
-	- HiWatch
+	1. Anran Unit  - Hashed password
+	2. Floureon Unit - SOIC-16 IC and hashed password
+	3. Swann Unit - Plaintext password in binary file.
+	4. Swann Unit - Plaintext password in a different binary file. 
+	5.  HiWatch - Untested example.
+	6.  Techview - Unvalidated example.
+
+&nbsp; 
 
 # 1. Intro
 
@@ -39,7 +53,11 @@ These systems typically run on a linux based operating system. In many cases thi
 
 The aim of this aricle is to provide some examples of how to access further data and retrieve passwords from some of these systems. This knowledge and approach can then be built upon to access more systems.
 
+&nbsp; 
+
 Onboard MXIC flash memory chip in a SWANN DVR.
+
+&nbsp; 
 
 ![PCB](hardware/pcb1.png)
 
@@ -52,6 +70,7 @@ Whilst checking the datasheet you can also confirm the operating voltage of the 
 
 ![Pinout](hardware/winbond.png)
 
+&nbsp; 
 
 # 2. Built in recovery options. 
 There are often factory reset options which allow and administrator password to be reset but this makes changes to the unit.
@@ -81,7 +100,7 @@ Floureon - leave blank
 SWANN - 12345
 
 
-
+&nbsp; 
 
 # 3. Flash Based Recovery - Hardware required. 
 
@@ -98,9 +117,19 @@ The operating system on a large number of CCTV systems is stored on a SOIC-8 for
 2. Non commercial options.
 I reccomend purchasing a Raspberry Pi for this task. It is a small portable device which can perfom the extraction and later dissasembly of the firmware, hardware and software required to assemble the kit is listed below.
 
-__SOIC -8 IC clip__. 
+__SOIC -8 IC clip__
 
 This allows the Target IC to be connected to whilst remaining on its target board. often the "nose" of these clips is required to be filed down to ensure a good conection.
+
+These are readily availabe from e-bay / bangood / aliexpress with a ribbon cable attatched.
+
+Luxury versions are avalable from brands such as Pomona. You will however have to make your own cables. 
+
+https://core-electronics.com.au/ic-test-clip-soic-8-pin.html
+
+__SOIC -16 IC clip__
+
+As above allows the IC to be interrogated whilst in circuit. You will have to make your own cables for these ones. 
 
 __CH341A Programmer__ 
 
@@ -140,6 +169,7 @@ Assembled version
 
 https://www.adafruit.com/product/1279
 
+&nbsp; 
 
 # 4. Software required
 If you are utilising the non commercial flash reading options the below will be required.
@@ -191,6 +221,9 @@ Knowledge of commands such as grep and strings may assist in locating passwords 
 Autopsy can also be utilised to analyse extracted file systems for content.
 
 https://www.autopsy.com
+
+&nbsp; 
+
 
 # 5. Extracting the device. 
 In most cases the IC can be read in stiu and will not need to be removed from the PCB in the target device.
@@ -275,7 +308,7 @@ I often perfom more than one extraction to ensure data integrity.
 # 6. Disassembling the firmware.
 As above you need to make sure Binwalk is installed correctly or this is unlikley to work. There may be other tools which can perform these actions but this is what I used. 
 
-
+&nbsp; 
 
 # Example 1. 
 ## Anran Unit.
@@ -384,6 +417,7 @@ Log:16-7-16 20:36:49[System],[LogIn],[UserName ,GUI]
 
 **SWDVK-845806WL** and likley similar units. 
 
+
 You can often discover user names by powering the system. The system will often populate the username field, this can speed up the process of locating a password for these systems.
 
 In this example the passcode is stored in plain text in a configuration file. This unit had the latest firmware and reqired a serial number to be sent to SWANN for a Master Reset password. 
@@ -432,6 +466,9 @@ copy the path where the path was located and utilise strings and grep. The -A 4 
 
 ![strings_swann2](screenshots/swann1.png)
 
+### Logs.
+SWANN logs can be acccesed through the seach function if they cannot be located in the menu of the device.
+I have found SWANN keep the logs on the hard drive of the unit on some models so you may need to interrogate the device with a cloned drive inserted or utilising a VOOM shadow or similar inline write blocking device.
 
 
 # Example 4
@@ -483,3 +520,20 @@ To locate the devCfg file we need to enable the matryoshka feature.
 You may need to utilise sudo permissions to open the file for example.
 
 `sudo strings ./_30000.extracted/cfg/devCfg.bin`
+
+&nbsp; 
+
+# Example 6
+## Techview unit.
+
+2014 Techview unit.
+
+__incomplete writeup__
+
+This one was not secured with a password but the concept should still be similar. Accounts were located after extracting the file system. 
+
+This example is yet to be validated
+
+From the Techview units I have dissasembled they seem to favour placing the Flash memory on the bottom of the board and utilising a SOIC-16 Package IC.
+
+![Techview](screenshots/techview1.png)
