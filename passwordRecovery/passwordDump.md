@@ -119,6 +119,7 @@ I reccomend purchasing a Raspberry Pi for this task. It is a small portable devi
 
 __SOIC -8 IC clip__
 
+![SOIC 8](hardware/SOIC8.png)
 This allows the Target IC to be connected to whilst remaining on its target board. often the "nose" of these clips is required to be filed down to ensure a good conection.
 
 These are readily availabe from e-bay / bangood / aliexpress with a ribbon cable attatched.
@@ -130,6 +131,8 @@ https://core-electronics.com.au/ic-test-clip-soic-8-pin.html
 __SOIC -16 IC clip__
 
 As above allows the IC to be interrogated whilst in circuit. You will have to make your own cables for these ones. 
+
+![SOIC 16](hardware/SOIC16.png)
 
 __CH341A Programmer__ 
 
@@ -159,7 +162,9 @@ Slightly more difficult to setup than the CH341A but a hightly versatile tool fo
 
 GoodFET42 assembled by author pictured with SOIC-8 Adapter attatched for examining IC's which have been removed from their PCB.
 
-![Raspberry Pi](hardware/cctvTools-3.png)
+Goodfet with IC adapter attatched.
+
+![GOODFET](hardware/cctvTools-3.png)
 
 GOODFET42 info.
 
