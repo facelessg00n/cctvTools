@@ -40,9 +40,14 @@ This can:-
 	1. Anran Unit  - Hashed password
 	2. Floureon Unit - SOIC-16 IC and hashed password
 	3. Swann Unit - Plaintext password in binary file.
-	4. Swann Unit - Plaintext password in a different binary file. 
+	4. Swann Unit - Plaintext password in a different binary file.
 	5.  HiWatch - Untested example.
 	6.  Techview - Unvalidated example.
+
+7. Disassembling Config Backups
+- Examples
+
+	1. Swann
 
 &nbsp;
 
@@ -150,6 +155,10 @@ The Raspberry Pi has SPI pins exposed which can be utilised to communicate direc
 
  Read time: Less than 1 minute.
 
+ https://pinout.xyz/pinout/spi
+
+![SPI Pins](screenshots/spi_pins.png)
+
 ## *** PCB / Design will be available shortly ****
 
 Pi, Pi Zero and SPI breakout board pictured with SOIC 8 Clip attached.
@@ -233,9 +242,9 @@ In most cases the IC can be read in-stiu and will not need to be removed from th
 
 ## **Method 1 - IC dumped while on PCB**
 
-Whilst this is best performed on a dead and off device on the bench, I have succesfully performed extrations on powered on and running units.
+Whilst this is best performed on a dead and off device on the bench, I have successfully performed extractions on powered on and running units.
 
-Open the case of the target unit and and disconnect the hard drive. As the unit is gping to first be powered via the extraction equipment, if the hard drive remains connected too much power may be be drawn and your extraction equipment may fail or be damaged!! Be aware that this method powers up the CPU on the unit and therefore may write log files to the IC. Depending on the goals of your investigation this may be a consideration.
+Open the case of the target unit and and disconnect the hard drive. As the unit is going to first be powered via the extraction equipment, if the hard drive remains connected too much power may be be drawn and your extraction equipment may fail or be damaged!! Be aware that this method powers up the CPU on the unit and therefore may write log files to the IC. Depending on the goals of your investigation this may be a consideration.
 
 Locate the flash IC chip and confirm its identity via its part number. You can then also confirm its pin out via its data sheet. Commonly seen manufacturers include Winbond and MXIC.
 
@@ -275,7 +284,7 @@ You will need to ensure you have enabled the SPI interface on your Pi, under the
 
 spispeed sets the communication speed in khz. 8000 (which is 8mhz) is the highest the Pi can achieve. I have had better results setting the speed slightly slower. 
 
-`sudo watch flashrom -p linux_spi:dev=/dev/spidev0.0, spispeed=5000`
+`sudo watch flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=5000`
 
 If the connection is correct a flash memory chip will be idenfied.
 
@@ -296,7 +305,7 @@ The -c switch is utilised with the IC identified in the above step.
 ### Utilising the Pi
 
 
-`sudo flashrom -p linux_spi:dev=/dev/spidev0.0, spispeed=5000 -c ***** -r cctv.bin -o log.txt`
+`sudo flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=5000 -c ***** -r cctv.bin -o log.txt`
 
 This will save the dump to a file called cctv.bin.
 
@@ -541,10 +550,19 @@ You may need to utilise sudo permissions to open the file for example.
 
 __incomplete writeup__
 
-This one was not secured with a password but the concept should still be similar. Accounts were located after extracting the file system. 
+This unit was not secured with a password but the concept should still be similar. Accounts were located after extracting the file system.
 
 This example is yet to be validated
 
 From the Techview units I have dissasembled they seem to favour placing the Flash memory on the bottom of the board and utilising a SOIC-16 Package IC.
 
 ![Techview](screenshots/techview1.png)
+
+# 7 Disassembling config backups
+
+## Example 1 - Swann
+ __Incomplete example__
+
+ Swann units all ow their config files to be exported to a USB. This file is a binary file which can be uplacked with binwalk.
+
+ Strings can then be utilised to extract the username, email, and passwords from the unit along with any netowrk settings.
