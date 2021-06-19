@@ -13,15 +13,17 @@ As always, this is advice recieved from some random Australian on the internet. 
 
 &nbsp;
 
-## Why do this?
+## Why would you do this?
 
 Whilst it is possible to play video from many CCTV systems utilising solutions such as DME Forensics DVR examiner it can often be beneficial to recover a password for a system.
-This can:-
-- Allow access to system logs
+This can:
+
+- Allow access to system logs.
+
 	- This can show login times etc.
 - Show the user locked it with a unique password and not a system password. 
 - Show ownership, for example email address and name associated to the device.
-- Allow access to non supported systems quickly.
+- Allow rapid access to non supported systems.
 
 &nbsp;
 
@@ -29,13 +31,13 @@ This can:-
 
 1. Intro
 2. Built in recovery options.
-	- Utilising baked in recovery options against the system.
+    - utilising baked in recovery options against the system.
 3. Flash Based Recovery - Tools Required.
 4. Software required.
-4. Serial Port Shenannegans
-	- Tools Required
-6. Extracting the device.
-	- Method 1 - IC reamins on PCB
+5. Serial Port Shenanigans
+    - Tools Required
+6. Extracting the device - read the flash memory chip.
+    - Method 1 - IC reamins on PCB
 		- Common issues
 7. Dissasembling the firmware.
 - Examples 
@@ -86,7 +88,7 @@ Whilst checking the data sheet you can also confirm the operating voltage of the
 There are often factory reset options which allow and administrator password to be reset but this makes changes to the unit.
 1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master password reset for the device. 
 
-If you follow the forgot password prompts it will state that it will send you an email (which it cant do as its disconnected on your bench). You will then be greeted by a screen to enter a password, if this is limited to Hex digits 0-F chances are the MAC address of the device is the master reset password.
+If you follow the forgot password prompts it will state that it will send you an email (which it can't do as its disconnected on your bench). You will then be greeted by a screen to enter a password, if this is limited to Hex digits 0-F chances are the MAC address of the device is the master reset password.
 
 The MAC can be discovered utilising SWANN'S own tools or utilising tools such as netdiscover.
 Plug your machine into the target device, and utilise netdiscover.
@@ -106,8 +108,11 @@ This has been removed from the play store and app store so use at your own risk
 https://apkpure.com/spd/com.uuch.android_zxinglibrary
 
 4. Default Passwords.
-Floureon - leave blank
-SWANN - 12345
+
+- Floureon - leave blank
+
+- SWANN - 12345
+
 
 &nbsp;
 
@@ -187,10 +192,6 @@ Assembled version
 
 https://www.adafruit.com/product/1279
 
-
-
-
-
 # 4. Software required
 
 If you are utilising the non commercial flash reading options the below will be required.
@@ -204,6 +205,7 @@ https://flashrom.org/Flashrom
 `sudo apt-get install flashrom`
 
 Ensure you are running the latest version by running `flashrom -v`. At the time of writing the newest version is Flashrom 1.2. If you have a lower version number you may need to follow these attached installation instructions. Higher version numbers support a wider range of IC's.
+
 https://flashrom.org/Downloads
 
 ## **Binwalk**
@@ -211,9 +213,11 @@ https://flashrom.org/Downloads
 Utilised for extracting the filesystem from memory extraction.
 
 Ensure you follow the full instructions for installing binwalk and ensure all the extras are installed to support SquashFS and JFFS or extraction of the full filesystem is unlikely.
+
 https://github.com/ReFirmLabs/binwalk
 
 **Follow all of these install instructions.**
+
 https://github.com/ReFirmLabs/binwalk/blob/master/INSTALL.md
 
 ## **Hex editor**
@@ -243,10 +247,9 @@ https://www.autopsy.com
 
 &nbsp;
 
-# 5. Serial Port Shenannegans.
+# 5. Serial port shenanigans.
 
-Many CCTV units include a serial port which is accessible on the motherboard. In some cases This port can be utilised to read out and extract firmware or passwords from the unit.
-
+Like any good vulnerable device many CCTV units include a serial port which is accessible on the motherboard. In some cases This port can be utilised to read out and extract firmware or passwords from the unit.
 
 ## Hardware required
 
@@ -254,7 +257,6 @@ Many CCTV units include a serial port which is accessible on the motherboard. In
 - Jumper wires.
 - Raspberry Pi or Host machine running Linux.
 - Ethernet cable
-
 
 Plug in your serial adapter and the below will list serial ports.
 
