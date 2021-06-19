@@ -32,10 +32,12 @@ This can:-
 	- Utilising baked in recovery options against the system.
 3. Flash Based Recovery - Tools Required.
 4. Software required.
-5. Extracting the device.
+4. Serial Port Shenannegans
+	- Tools Required
+6. Extracting the device.
 	- Method 1 - IC reamins on PCB
 		- Common issues
-6. Dissasembling the firmware.
+7. Dissasembling the firmware.
 - Examples 
 	1. Anran Unit  - Hashed password
 	2. Floureon Unit - SOIC-16 IC and hashed password
@@ -44,11 +46,14 @@ This can:-
 	5.  HiWatch - Untested example.
 	6.  Techview - Unvalidated example.
 
-7. Disassembling Config Backups
+8. Disassembling Config Backups
 - Examples
 
 	1. Swann
 
+9.  Serial Port shenanigans examples.
+
+	- UL-Tech unit.
 &nbsp;
 
 # 1. Intro
@@ -182,7 +187,9 @@ Assembled version
 
 https://www.adafruit.com/product/1279
 
-&nbsp;
+
+
+
 
 # 4. Software required
 
@@ -236,7 +243,41 @@ https://www.autopsy.com
 
 &nbsp;
 
-# 5. Extracting the device. 
+# 5. Serial Port Shenannegans.
+
+Many CCTV units include a serial port which is accessible on the motherboard. In some cases This port can be utilised to read out and extract firmware or passwords from the unit.
+
+
+## Hardware required
+
+- USB To serial adapter.
+- Jumper wires.
+- Raspberry Pi or Host machine running Linux.
+- Ethernet cable
+
+
+Plug in your serial adapter and the below will list serial ports.
+
+`ls /dev/tty*`
+
+Your USB serial adapter serial will end with ttyUSB or ttyACM
+
+`ls /dev/ttyUSB*`
+
+or will also list devices
+
+`ls /dev/ttyACM*`
+
+---
+
+## Software
+
+- Minicom
+- TFTP - Trivial File Transfer Protocol.
+
+https://wiki.emacinc.com/wiki/Getting_Started_With_Minicom
+
+# 6. Extracting the device. 
 
 In most cases the IC can be read in-stiu and will not need to be removed from the PCB in the target device.
 
@@ -321,7 +362,7 @@ Dump the IC
 
 I often perfom more than one extraction to ensure data integrity.
 
-# 6. Disassembling the firmware
+# 7. Disassembling the firmware
 As above you need to make sure Binwalk is installed correctly or this is unlikley to work. There may be other tools which can perform these actions but this is what I used.
 
 &nbsp;
@@ -558,7 +599,7 @@ From the Techview units I have dissasembled they seem to favour placing the Flas
 
 ![Techview](screenshots/techview1.png)
 
-# 7 Disassembling config backups
+# 8. Disassembling config backups
 
 ## Example 1 - Swann
  __Incomplete example__
@@ -566,3 +607,161 @@ From the Techview units I have dissasembled they seem to favour placing the Flas
  Swann units all ow their config files to be exported to a USB. This file is a binary file which can be uplacked with binwalk.
 
  Strings can then be utilised to extract the username, email, and passwords from the unit along with any netowrk settings.
+
+&nbsp;
+
+# 9.  Serial Port Shenanigans.
+
+Thanks to the Write-ups from CyberGibbons who provided inspiration for this method.
+
+https://cybergibbons.com/category/hardware-hacking/
+
+&nbsp;
+
+# Example one - UL-Tech unit.
+
+These instructions are known to work on a UL-Tech CCTV recorder.
+
+Model number **CCTV-WF-CLA-4C-4B**
+
+It is likely this method will work on other devices as many CCTV units utilise HiSilicon Hardware and U-BOOT.
+
+In the case of this model the serial ports were labelled.
+
+---
+
+## Performing the extraction
+---
+## Setup hardware
+
+Connect your serial adapter to the identified serial pins on the motherboard of the CCTV unit as below.
+
+Adapter - Unit
+
+RX - - - - TX
+
+TX - - - - RX
+
+GND - - -  GND
+
+## Begin communication with the unit
+
+On your local machine start a minicom terminal. The '-c on' switch loads the colour interface.
+
+`sudo minicom -c on`
+
+After Minicom has been started you should verify serttings to ensure it is utilising the correct serial port.
+
+ Press ctrl+A then Z to bring up the menu and navigate to serial port setup and endure it matches your device.
+
+Power on the CCTV unit and you should begin to see text flowing on the screen.
+
+If garbage data appears you may need to verify the TX and RX wires are connected appropriately and that your baud rate is set to the same baud rate as the unit. I found 115 200 is a good starting point.
+
+If text is readable and flowing you should see the unit going through its boot sequence. We can verify the serial settings are correct.
+
+Power down the unit and then re connect power and press enter repeatedly to prevent the boot process. If successful you will see the below prompt appear.
+
+	hisilicon #
+
+If you then enter "help" and press enter a help menu for the u-Boot loader will appear.
+
+	hisilicon # help
+
+Entering 'printenv' will display settings for the unit.
+
+	hisilicon # printenv
+
+This will show the network settings from the unit, an example of which is shown below.
+
+	DVR Settings
+	netmask=255.255.255.0
+	ipaddr=192.168.1.10
+	serverip=192.168.1.99
+
+Initialise the flash memory
+
+	hisilicon # sf probe 0
+
+The below should be displayed indicating the process was successful.
+
+	16384 KiB hi_fmc at 0:0 is now current device
+
+## Read flash into RAM.
+This command reads 0x1000000 bytes from address 0x0 of the flash chip into RAM at address 0x82000000
+
+	sf read 0x82000000 0x0 0x1000000 
+
+## Extract password from memory offset.
+The unit I tested stored the password in plaintext at this specific memory offset (0x820a0010).
+
+The command below reads 0x50 bytes (80 bytes) of data from the offset of 0x820a0010. The username 'admin' is displayed and the plaintext password is stored below.
+
+	hisilicon # md 0x820a0010 50
+	820a0010: 00000000 00000000 696d6461 0000006e    ........admin...
+	820a0020: 00000000 00000000 00000000 00000000    ................
+	820a0030: 00000000 00000000 00000000 00000000    ................
+	820a0040: 00000000 00000000 00000000 00000000    ................
+	820a0050: 00000000 00000000 00000000 00000000    ................
+	820a0060: 00000000 00000000 00000000 00000000    ................
+	820a0070: 00000000 00000000 00000000 00000000    ................
+	820a0080: 00000000 00000000 00000000 00000000    ................
+	820a0090: 00000000 00000000 00000000 00000000    ................
+	820a00a0: 00000000 00000000 00000000 00000000    ................
+	820a00b0: 00000000 00000000 00000000 00000000    ................
+	820a00c0: 00000000 00000000 00000000 00000000    ................
+	820a00d0: 00000000 00000000 00000000 00000000    ................
+	820a00e0: 00000000 00000000 00000000 00000000    ................
+	820a00f0: 00000000 00000000 00000000 00000000    ................
+	820a0100: 00000000 00000000 XXXXXXXX XXXXXXXX    ........TXXXXXXX
+	820a0110: XXXXXXXX 00000000 00000000 00000000    X...............
+	820a0120: 00000000 00000000 00000000 00000000    ................
+	820a0130: 00000000 00000000 00000000 00000000    ................
+	820a0140: 00000000 00000000 00000000 00000000    ................
+	hisilicon #
+
+## In the event the password is not found with the above method.
+You can attempt to read out more memory from around that offset but this can quickly become a fishing excercise.
+
+If this fails the contents of the memory chip can be exported via tftp to your local machine. You will need an ethernet cable to connect your host machine to the unit.
+
+on local machine
+Install TFTP
+
+`sudo apt-get install tftpd-hpa`
+
+If you already have TFTP installed and it fails later in the process; when it is trying to receive data i have found uninstalling it and reinstalling it gets it working again.
+
+Change your ip address to match the server address from the printev command above. You can also change the addresses from within the CCTV unit.
+
+`setenv ipaddr 0:0:0:0       - replace with desired IP`
+`setenv serverip 0:0:0:0 - replace with desired IP`
+
+## On the host machine.
+We will need to create an empty file, this will be replaced by the file uploaded by TFTP.
+
+Navigate to the TFTP directory
+
+`cd /srv/tftp`
+
+Create an empty file
+
+`sudo touch firmare.bin`
+
+Add write permissions.
+
+`sudo chmod 666 firmware.bin`
+
+Back in the Minicom terminal for the unit run the below
+
+	tftp 0x82000000 firmware.bin 0x1000000
+
+There will be a brief pause and then you should see the progress begin and the file transfer across. This file will then be located in your /srv/tftp directory.
+
+To locate the username and password on this unit.
+
+`strings firmare.bin | grep admin -A 10`
+
+The plaintext username and password should appear.
+
+If the user name is not admin replace the search term with the username. This can be confirmed by powering on the unit with the hard drive disconnected.
