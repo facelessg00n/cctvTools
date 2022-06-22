@@ -782,9 +782,10 @@ Install TFTP
 
 If you already have TFTP installed and it fails later in the process; when it is trying to receive data i have found uninstalling it and reinstalling it gets it working again.
 
-Change your ip address to match the server address from the printev command above. You can also change the addresses from within the CCTV unit.
+Change your ip address to match the server address from the printenv command above. You can also change the addresses from within the CCTV unit.
 
-`setenv ipaddr 0:0:0:0       - replace with desired IP`
+`setenv ipaddr 0:0:0:0  - replace with desired IP`
+
 `setenv serverip 0:0:0:0 - replace with desired IP`
 
 ## On the host machine
