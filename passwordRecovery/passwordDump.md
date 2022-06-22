@@ -38,10 +38,13 @@ This can:
     - Tools Required
 6. Extracting the device - read the flash memory chip.
     - Method 1 - IC reamins on PCB
-  - Common issues
+
+- Common issues
+
 7. Dissasembling the firmware.
 
 - Examples
+
  1. Anran Unit  - Hashed password
  2. Floureon Unit - SOIC-16 IC and hashed password
  3. Swann Unit - Plaintext password in binary file.
@@ -50,15 +53,15 @@ This can:
  6. Techview - Unvalidated example.
  7. Uniden - SOIC-16 IC and password in an XML File
 
-8. Disassembling Config Backups
+ 8. Disassembling Config Backups
 
 - Examples
 
  1. Swann
 
-9. Serial Port shenanigans examples.
+ 9. Serial Port shenanigans examples.
 
- - UL-Tech unit.
+- UL-Tech unit.
 &nbsp;
 
 # 1. Intro
@@ -172,7 +175,7 @@ The Raspberry Pi has SPI pins exposed which can be utilised to communicate direc
 
 ![SPI Pins](screenshots/spi_pins.png)
 
-## ***PCB / Design will be available shortly****
+## *__PCB / Design will be available shortly__**
 
 Pi, Pi Zero and SPI breakout board pictured with SOIC 8 Clip attached.
 ![Raspberry Pi](hardware/cctvTools-2.png)
@@ -493,7 +496,7 @@ Extract the bin file using binwalk.
 
 Locate the file devCfg.bin which should be located at the following path.
 
-__/swann/_dump.bin-1.extracted/jffs2-root/fs_1__
+__/swann/*dump.bin-1.extracted/jffs2-root/fs_1*_
 
 You can also locate it with the below.
 
@@ -633,6 +636,8 @@ The firmware for this model can be unpacked with binwalk and the Matroyoska mode
 
 This firmware however swelled to approximatley 5GB once unpacked.
 
+The password can be located in plaintext in a file named `USERCONFIG.xml`
+
 `sudo binwalk -e -M uniden.bin`
 
 The password can also likeley be located by searching for '*sPassword=*' utilising bless
@@ -732,7 +737,7 @@ The below should be displayed indicating the process was successful.
 
 This command reads 0x1000000 bytes from address 0x0 of the flash chip into RAM at address 0x82000000
 
- sf read 0x82000000 0x0 0x1000000 
+ sf read 0x82000000 0x0 0x1000000
 
 ## Extract password from memory offset
 
