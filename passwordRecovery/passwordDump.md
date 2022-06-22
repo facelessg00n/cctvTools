@@ -5,7 +5,7 @@
 ![intro](screenshots/swann.png)
 &nbsp;
 
-## Work in progress.......
+## Work in progress
 
 &nbsp;
 
@@ -20,8 +20,8 @@ This can:
 
 - Allow access to system logs.
 
-	- This can show login times etc.
-- Show the user locked it with a unique password and not a system password. 
+  - This can show login times etc.
+- Show the user locked it with a unique password and not a system password.
 - Show ownership, for example email address and name associated to the device.
 - Allow rapid access to non supported systems.
 
@@ -38,24 +38,27 @@ This can:
     - Tools Required
 6. Extracting the device - read the flash memory chip.
     - Method 1 - IC reamins on PCB
-		- Common issues
+  - Common issues
 7. Dissasembling the firmware.
-- Examples 
-	1. Anran Unit  - Hashed password
-	2. Floureon Unit - SOIC-16 IC and hashed password
-	3. Swann Unit - Plaintext password in binary file.
-	4. Swann Unit - Plaintext password in a different binary file.
-	5.  HiWatch - Untested example.
-	6.  Techview - Unvalidated example.
+
+- Examples
+ 1. Anran Unit  - Hashed password
+ 2. Floureon Unit - SOIC-16 IC and hashed password
+ 3. Swann Unit - Plaintext password in binary file.
+ 4. Swann Unit - Plaintext password in a different binary file.
+ 5. HiWatch - Untested example.
+ 6. Techview - Unvalidated example.
+ 7. Uniden - SOIC-16 IC and password in an XML File
 
 8. Disassembling Config Backups
+
 - Examples
 
-	1. Swann
+ 1. Swann
 
-9.  Serial Port shenanigans examples.
+9. Serial Port shenanigans examples.
 
-	- UL-Tech unit.
+ - UL-Tech unit.
 &nbsp;
 
 # 1. Intro
@@ -79,14 +82,15 @@ The below is the pin out for common SPI flash chips. This typically remains cons
 
 Whilst checking the data sheet you can also confirm the operating voltage of the IC.
 
-
 ![Pinout](hardware/winbond.png)
 
 &nbsp;
 
 # 2. Built in recovery options
+
 There are often factory reset options which allow and administrator password to be reset but this makes changes to the unit.
-1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master password reset for the device. 
+
+1. Swann MAC address by-pass. with many older Swann systems the MAC address of the device is the master password reset for the device.
 
 If you follow the forgot password prompts it will state that it will send you an email (which it can't do as its disconnected on your bench). You will then be greeted by a screen to enter a password, if this is limited to Hex digits 0-F chances are the MAC address of the device is the master reset password.
 
@@ -105,7 +109,7 @@ Wireshark can also be utilsied for this task.
 
 This has been removed from the play store and app store so use at your own risk
 
-https://apkpure.com/spd/com.uuch.android_zxinglibrary
+<https://apkpure.com/spd/com.uuch.android_zxinglibrary>
 
 4. Default Passwords.
 
@@ -113,20 +117,19 @@ https://apkpure.com/spd/com.uuch.android_zxinglibrary
 
 - SWANN - 12345
 
-
 &nbsp;
 
 # 3. Flash Based Recovery - Hardware required
 
 The operating system on a large number of CCTV systems is stored on a SOIC-8 form factor flash IC. This IC can commonly be read whilst in situ on the board. Common brands seen are often MXIC (Macronix) or Winbond brand chips.
 
-1. Commercial Flash memory readers. 
-- I have not tested these options but a number of commerical SPI flash readers exist such as. 
-	- Flashcat.
-	https://www.embeddedcomputers.net/products/FlashcatUSB/
-	- Segger J-Flash https://www.segger.com/products/debug-probes/j-link/tools/j-flash-spi/
-		- In my experience with using Segger equipment for other activities it does require a reasonable amount of technical knowledge.
+1. Commercial Flash memory readers.
 
+- I have not tested these options but a number of commerical SPI flash readers exist such as.
+  - Flashcat.
+ <https://www.embeddedcomputers.net/products/FlashcatUSB/>
+  - Segger J-Flash <https://www.segger.com/products/debug-probes/j-link/tools/j-flash-spi/>
+    - In my experience with using Segger equipment for other activities it does require a reasonable amount of technical knowledge.
 
 2. Non commercial options.
 I recommend purchasing a Raspberry Pi for this task. It is a small portable device which can perform the extraction and later disassembly of the firmware, hardware and software required to assemble the kit is listed below.
@@ -140,7 +143,7 @@ These are readily available from e-bay / Bangood / Aliexpress with a ribbon cabl
 
 Luxury versions are available from brands such as Pomona. You will however have to make your own cables.
 
-https://core-electronics.com.au/ic-test-clip-soic-8-pin.html
+<https://core-electronics.com.au/ic-test-clip-soic-8-pin.html>
 
 __SOIC -16 IC clip__
 
@@ -148,7 +151,7 @@ As above allows the IC to be interrogated whilst in circuit. You will have to ma
 
 ![SOIC 16](hardware/SOIC16.png)
 
-__CH341A Programmer__ 
+__CH341A Programmer__
 
 Commonly available on e-bay and other websites, this device is so cheap it could be considered disposable. Without modification however it utlises a 5v logic level to communicate with the Flash IC which is above the 3.3V logic level required. There is a slim chance this may damage the IC in the process.
 This device also supplied 3.3v to the target board.
@@ -165,11 +168,11 @@ The Raspberry Pi has SPI pins exposed which can be utilised to communicate direc
 
  Read time: Less than 1 minute.
 
- https://pinout.xyz/pinout/spi
+ <https://pinout.xyz/pinout/spi>
 
 ![SPI Pins](screenshots/spi_pins.png)
 
-## *** PCB / Design will be available shortly ****
+## ***PCB / Design will be available shortly****
 
 Pi, Pi Zero and SPI breakout board pictured with SOIC 8 Clip attached.
 ![Raspberry Pi](hardware/cctvTools-2.png)
@@ -186,41 +189,43 @@ Goodfet with IC adapter attached.
 
 GOODFET42 info.
 
-http://goodfet.sourceforge.net/hardware/goodfet42/
+<http://goodfet.sourceforge.net/hardware/goodfet42/>
 
 Assembled version
 
-https://www.adafruit.com/product/1279
+<https://www.adafruit.com/product/1279>
 
 # 4. Software required
 
 If you are utilising the non commercial flash reading options the below will be required.
 
-## **Flashrom**
+## __Flashrom__
 
 Utilised for reading the memory of the IC.
 
-https://flashrom.org/Flashrom
+<https://flashrom.org/Flashrom>
 
 `sudo apt-get install flashrom`
 
 Ensure you are running the latest version by running `flashrom -v`. At the time of writing the newest version is Flashrom 1.2. If you have a lower version number you may need to follow these attached installation instructions. Higher version numbers support a wider range of IC's.
 
-https://flashrom.org/Downloads
+it is suggested to run Flashrom in Verbose mode with `-VVV` so you can observe the flow of data and ensure it is still functioning. Connection errors may just cause it to hang.
 
-## **Binwalk**
+<https://flashrom.org/Downloads>
+
+## __Binwalk__
 
 Utilised for extracting the filesystem from memory extraction.
 
 Ensure you follow the full instructions for installing binwalk and ensure all the extras are installed to support SquashFS and JFFS or extraction of the full filesystem is unlikely.
 
-https://github.com/ReFirmLabs/binwalk
+<https://github.com/ReFirmLabs/binwalk>
 
-**Follow all of these install instructions.**
+__Follow all of these install instructions.__
 
-https://github.com/ReFirmLabs/binwalk/blob/master/INSTALL.md
+<https://github.com/ReFirmLabs/binwalk/blob/master/INSTALL.md>
 
-## **Hex editor**
+## __Hex editor__
 
 Bless is reccomended if you are utilising a Raspberry Pi.
 
@@ -228,26 +233,26 @@ Bless is reccomended if you are utilising a Raspberry Pi.
 
 For other machines any standard hex editor such as HxD or Winhex will be fine.
 
-## **John the Ripper**
+## __John the Ripper__
 
 In the case of units where the password is hashed.
 You will need the jumbo version to support the Dahua hash type.
 
-https://www.openwall.com/john/
+<https://www.openwall.com/john/>
 
-## **Other**
+## __Other__
 
 Knowledge of commands such as grep and strings may assist in locating passwords in difficult devices.
 
-## **Autopsy.**
+## __Autopsy.__
 
 Autopsy can also be utilised to analyse extracted file systems for content.
 
-https://www.autopsy.com
+<https://www.autopsy.com>
 
 &nbsp;
 
-# 5. Serial port shenanigans.
+# 5. Serial port shenanigans
 
 Like any good vulnerable device many CCTV units include a serial port which is accessible on the motherboard. In some cases This port can be utilised to read out and extract firmware or passwords from the unit.
 
@@ -277,13 +282,13 @@ or will also list devices
 - Minicom
 - TFTP - Trivial File Transfer Protocol.
 
-https://wiki.emacinc.com/wiki/Getting_Started_With_Minicom
+<https://wiki.emacinc.com/wiki/Getting_Started_With_Minicom>
 
-# 6. Extracting the device. 
+# 6. Extracting the device
 
 In most cases the IC can be read in-stiu and will not need to be removed from the PCB in the target device.
 
-## **Method 1 - IC dumped while on PCB**
+## __Method 1 - IC dumped while on PCB__
 
 Whilst this is best performed on a dead and off device on the bench, I have successfully performed extractions on powered on and running units.
 
@@ -297,7 +302,7 @@ As a word if caution there is often power supply components with the same form f
 
 Pin one on the flash IC can then be identified by a dot on the pin and usually also a marking on the PCB.
 
-### **Utilising FLASHROM and a SOIC 8 clip to extract in-situ**
+### __Utilising FLASHROM and a SOIC 8 clip to extract in-situ__
 
 Connect the SOIC-8 clip to the IC and your flash reading tool of choice making sure Pin 1 connects to Pin 1 on the IC. If you have connected the clip correctly the LED’s on the PCB should light up, as mentioned before this indicated the board has powered up. As power is being supplied by the extraction tool you need to make sure any hard drives remain disconnected. It may take a few attempts to get the clip to sit correctly and it may need to be held in place for the duration of the extraction
 If you are utilising Flashrom to perform the extraction it will likely require SUDO access to operate correctly.
@@ -316,16 +321,16 @@ If you are utilising Flashrom to perform the extraction it will likely require S
 
 To simplify testing the connection run Flashrom with the watch command and it will check every 2 seconds for a connection and identify the IC.
 
-**CH341A**
+__CH341A__
 
 `sudo watch flashrom -p ch341A`
 
 Flashrom will identify when a chip is detected and attempt to identify its type. You will need to utilise the identified IC to download it.
 
-**Raspberry Pi**
+__Raspberry Pi__
 You will need to ensure you have enabled the SPI interface on your Pi, under the Pi Settings / interfaces menu.
 
-spispeed sets the communication speed in khz. 8000 (which is 8mhz) is the highest the Pi can achieve. I have had better results setting the speed slightly slower. 
+spispeed sets the communication speed in khz. 8000 (which is 8mhz) is the highest the Pi can achieve. I have had better results setting the speed slightly slower.
 
 `sudo watch flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=5000`
 
@@ -347,7 +352,6 @@ The -c switch is utilised with the IC identified in the above step.
 
 ### Utilising the Pi
 
-
 `sudo flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=5000 -c ***** -r cctv.bin -o log.txt`
 
 This will save the dump to a file called cctv.bin.
@@ -365,6 +369,7 @@ Dump the IC
 I often perfom more than one extraction to ensure data integrity.
 
 # 7. Disassembling the firmware
+
 As above you need to make sure Binwalk is installed correctly or this is unlikley to work. There may be other tools which can perform these actions but this is what I used.
 
 &nbsp;
@@ -382,10 +387,10 @@ We will utilise `-f` to generate a log file and `-e` to extract the files.
 
 You will be presented with a large amount of output as bin walk extracts the various file systems.
 
-Once this is complete you will have a folder called **_anran.bin.extracted.**
+Once this is complete you will have a folder called ___anran.bin.extracted.__
 
 When you navigate this folder structure you should have the following path.
-**_anran.bin.extracted/jffs2-root/fs_1/Config**
+___anran.bin.extracted/jffs2-root/fs_1/Config__
 
 If it is not located there search the exctracted file systme using the following.
 
@@ -401,7 +406,7 @@ Open a new terminal window and create a folder called hash to work in.
 
 `mkdir hash`
 
-Then create text file called **hash.txt** in the following format which will be recognised by John. The name is not important but will simplfiy the excercise.
+Then create text file called __hash.txt__ in the following format which will be recognised by John. The name is not important but will simplfiy the excercise.
 
 `nano hash.txt`
 
@@ -443,7 +448,7 @@ jffs2-root-7/fs_1/Config/Account1
 
 jffs2-root-7/fs_1/Config/Account2
 
-### **SOIC-16 IC from MXIC**
+### __SOIC-16 IC from MXIC__
 
 ![Floureon PCB](screenshots/floureon2.png)
 
@@ -451,7 +456,8 @@ jffs2-root-7/fs_1/Config/Account2
 
 ![Floureon PCB](screenshots/mxic.png)
 
-### **IC Clip attatched to PCB**
+### __IC Clip attatched to PCB__
+
 This unit was also powered on via its power pack to download it. I waited for the unit to complete its boot cycle then conencted the IC clip to dump the memmory.
 
 ![Floureon PCB](screenshots/floureon1.png)
@@ -471,15 +477,15 @@ Log:16-7-16 20:36:18[System],[LogOut],[UserName ,GUI]
 
 Log:16-7-16 20:36:49[System],[LogIn],[UserName ,GUI]
 
-# Example 3 
+# Example 3
 
 ## Swann DVR
 
-**SWDVK-845806WL** and likley similar units.
+__SWDVK-845806WL__ and likley similar units.
 
 You can often discover user names by powering the system. The system will often populate the username field, this can speed up the process of locating a password for these systems.
 
-In this example the passcode is stored in plain text in a configuration file. This unit had the latest firmware and reqired a serial number to be sent to SWANN for a Master Reset password. 
+In this example the passcode is stored in plain text in a configuration file. This unit had the latest firmware and reqired a serial number to be sent to SWANN for a Master Reset password.
 
 Extract the bin file using binwalk.
 
@@ -487,7 +493,7 @@ Extract the bin file using binwalk.
 
 Locate the file devCfg.bin which should be located at the following path.
 
-**/swann/_dump.bin-1.extracted/jffs2-root/fs_1**
+__/swann/_dump.bin-1.extracted/jffs2-root/fs_1__
 
 You can also locate it with the below.
 
@@ -497,24 +503,25 @@ This file contains the usernames and passwords stored in plaintext along with th
 
 You can then extract the password from the file in a number of ways.
 
-### **Open in hex editor.**
+### __Open in hex editor.__
 
-navigate to the folder containing the file and open the file in bless. 
-
+navigate to the folder containing the file and open the file in bless.
 
 `sudo bless devCfg.bin`
 
 Scroll through and locate the username and password.
 
-You can try searching for “admin” and the user name password will be stored next to that. 
+You can try searching for “admin” and the user name password will be stored next to that.
+
 - Ensure you are searching for ASCII characters or you will return no results.
 
-### **Utilise strings**
+### __Utilise strings__
+
 This will present printable characters contained in the file and present you with the usernames and passwords below them.
 
 `strings devCfg.bin`
 
-### **Utilise Strings and GREP**
+### __Utilise Strings and GREP__
 
 As the username admin is usually always present we can also perform the action utilising strings and grep.
 
@@ -537,7 +544,7 @@ I have found SWANN keep the logs on the hard drive of the unit on some models so
 
 ## Swann DVR
 
-**NVW-1080** and likley similar models.
+__NVW-1080__ and likley similar models.
 
 This model also stores its user credentials in plaintext, but is slightly different from the one above. This version of firmware presented the user with the "Super Password" reset method.
 
@@ -550,14 +557,16 @@ Locate a file called "usr.cfg"
 `find -name "*usr.cfg"`
 This can usually be found in.
 
-**/jffs2-root/fs_1/usr.cfg**
+__/jffs2-root/fs_1/usr.cfg__
 
 Utilise strings to extract the password. Alternativley this can be completed in a hex editor.
 
 ![strings_swann2](screenshots/swann2.png)
 
 # Example 5
+
 ## Hiwatch unit
+
 Test unit
 
 NVR-104-E/4P
@@ -587,7 +596,8 @@ You may need to utilise sudo permissions to open the file for example.
 &nbsp;
 
 # Example 6
-## Techview unit.
+
+## Techview unit
 
 2014 Techview unit.
 
@@ -601,9 +611,36 @@ From the Techview units I have dissasembled they seem to favour placing the Flas
 
 ![Techview](screenshots/techview1.png)
 
+# Example 7
+
+## Uniden unit
+
+### Under construction
+
+This was tested against a Uniden CCTV unit. This unit was fitted with a SOIC-16 IC (mx25l12873f). This main boad of ths unit was required to be powered whilst performing the extraction.
+
+This firmware can be extracted with flashrom.
+
+This flash memory chip took some time to extract using a ch341a so it is suggested to use verbose output mode so you can continue to see that Flashrom is working.
+
+Total read tiome was in excess of 15 minutes. A faster programmer such as the Pi Hat would be more efficient.
+
+This can be added with `-VVV`
+
+`sudo flashrom -p ch341a -c ****** -r uniden.bin -VVV`
+
+The firmware for this model can be unpacked with binwalk and the Matroyoska mode.
+
+This firmware however swelled to approximatley 5GB once unpacked.
+
+`sudo binwalk -e -M uniden.bin`
+
+The password can also likeley be located by searching for '*sPassword=*' utilising bless
+
 # 8. Disassembling config backups
 
 ## Example 1 - Swann
+
  __Incomplete example__
 
  Swann units all ow their config files to be exported to a USB. This file is a binary file which can be uplacked with binwalk.
@@ -612,19 +649,19 @@ From the Techview units I have dissasembled they seem to favour placing the Flas
 
 &nbsp;
 
-# 9.  Serial Port Shenanigans.
+# 9.  Serial Port Shenanigans
 
 Thanks to the Write-ups from CyberGibbons who provided inspiration for this method.
 
-https://cybergibbons.com/category/hardware-hacking/
+<https://cybergibbons.com/category/hardware-hacking/>
 
 &nbsp;
 
-# Example one - UL-Tech unit.
+# Example one - UL-Tech unit
 
 These instructions are known to work on a UL-Tech CCTV recorder.
 
-Model number **CCTV-WF-CLA-4C-4B**
+Model number __CCTV-WF-CLA-4C-4B__
 
 It is likely this method will work on other devices as many CCTV units utilise HiSilicon Hardware and U-BOOT.
 
@@ -633,7 +670,9 @@ In the case of this model the serial ports were labelled.
 ---
 
 ## Performing the extraction
+
 ---
+
 ## Setup hardware
 
 Connect your serial adapter to the identified serial pins on the motherboard of the CCTV unit as below.
@@ -664,65 +703,68 @@ If text is readable and flowing you should see the unit going through its boot s
 
 Power down the unit and then re connect power and press enter repeatedly to prevent the boot process. If successful you will see the below prompt appear.
 
-	hisilicon #
+ hisilicon #
 
 If you then enter "help" and press enter a help menu for the u-Boot loader will appear.
 
-	hisilicon # help
+ hisilicon # help
 
 Entering 'printenv' will display settings for the unit.
 
-	hisilicon # printenv
+ hisilicon # printenv
 
 This will show the network settings from the unit, an example of which is shown below.
 
-	DVR Settings
-	netmask=255.255.255.0
-	ipaddr=192.168.1.10
-	serverip=192.168.1.99
+ DVR Settings
+ netmask=255.255.255.0
+ ipaddr=192.168.1.10
+ serverip=192.168.1.99
 
 Initialise the flash memory
 
-	hisilicon # sf probe 0
+ hisilicon # sf probe 0
 
 The below should be displayed indicating the process was successful.
 
-	16384 KiB hi_fmc at 0:0 is now current device
+ 16384 KiB hi_fmc at 0:0 is now current device
 
-## Read flash into RAM.
+## Read flash into RAM
+
 This command reads 0x1000000 bytes from address 0x0 of the flash chip into RAM at address 0x82000000
 
-	sf read 0x82000000 0x0 0x1000000 
+ sf read 0x82000000 0x0 0x1000000 
 
-## Extract password from memory offset.
+## Extract password from memory offset
+
 The unit I tested stored the password in plaintext at this specific memory offset (0x820a0010).
 
 The command below reads 0x50 bytes (80 bytes) of data from the offset of 0x820a0010. The username 'admin' is displayed and the plaintext password is stored below.
 
-	hisilicon # md 0x820a0010 50
-	820a0010: 00000000 00000000 696d6461 0000006e    ........admin...
-	820a0020: 00000000 00000000 00000000 00000000    ................
-	820a0030: 00000000 00000000 00000000 00000000    ................
-	820a0040: 00000000 00000000 00000000 00000000    ................
-	820a0050: 00000000 00000000 00000000 00000000    ................
-	820a0060: 00000000 00000000 00000000 00000000    ................
-	820a0070: 00000000 00000000 00000000 00000000    ................
-	820a0080: 00000000 00000000 00000000 00000000    ................
-	820a0090: 00000000 00000000 00000000 00000000    ................
-	820a00a0: 00000000 00000000 00000000 00000000    ................
-	820a00b0: 00000000 00000000 00000000 00000000    ................
-	820a00c0: 00000000 00000000 00000000 00000000    ................
-	820a00d0: 00000000 00000000 00000000 00000000    ................
-	820a00e0: 00000000 00000000 00000000 00000000    ................
-	820a00f0: 00000000 00000000 00000000 00000000    ................
-	820a0100: 00000000 00000000 XXXXXXXX XXXXXXXX    ........TXXXXXXX
-	820a0110: XXXXXXXX 00000000 00000000 00000000    X...............
-	820a0120: 00000000 00000000 00000000 00000000    ................
-	820a0130: 00000000 00000000 00000000 00000000    ................
-	820a0140: 00000000 00000000 00000000 00000000    ................
-	hisilicon #
+ hisilicon # md 0x820a0010 50
+ 820a0010: 00000000 00000000 696d6461 0000006e    ........admin...
+ 820a0020: 00000000 00000000 00000000 00000000    ................
+ 820a0030: 00000000 00000000 00000000 00000000    ................
+ 820a0040: 00000000 00000000 00000000 00000000    ................
+ 820a0050: 00000000 00000000 00000000 00000000    ................
+ 820a0060: 00000000 00000000 00000000 00000000    ................
+ 820a0070: 00000000 00000000 00000000 00000000    ................
+ 820a0080: 00000000 00000000 00000000 00000000    ................
+ 820a0090: 00000000 00000000 00000000 00000000    ................
+ 820a00a0: 00000000 00000000 00000000 00000000    ................
+ 820a00b0: 00000000 00000000 00000000 00000000    ................
+ 820a00c0: 00000000 00000000 00000000 00000000    ................
+ 820a00d0: 00000000 00000000 00000000 00000000    ................
+ 820a00e0: 00000000 00000000 00000000 00000000    ................
+ 820a00f0: 00000000 00000000 00000000 00000000    ................
+ 820a0100: 00000000 00000000 XXXXXXXX XXXXXXXX    ........TXXXXXXX
+ 820a0110: XXXXXXXX 00000000 00000000 00000000    X...............
+ 820a0120: 00000000 00000000 00000000 00000000    ................
+ 820a0130: 00000000 00000000 00000000 00000000    ................
+ 820a0140: 00000000 00000000 00000000 00000000    ................
+ hisilicon #
 
-## In the event the password is not found with the above method.
+## In the event the password is not found with the above method
+
 You can attempt to read out more memory from around that offset but this can quickly become a fishing excercise.
 
 If this fails the contents of the memory chip can be exported via tftp to your local machine. You will need an ethernet cable to connect your host machine to the unit.
@@ -739,7 +781,8 @@ Change your ip address to match the server address from the printev command abov
 `setenv ipaddr 0:0:0:0       - replace with desired IP`
 `setenv serverip 0:0:0:0 - replace with desired IP`
 
-## On the host machine.
+## On the host machine
+
 We will need to create an empty file, this will be replaced by the file uploaded by TFTP.
 
 Navigate to the TFTP directory
@@ -756,7 +799,7 @@ Add write permissions.
 
 Back in the Minicom terminal for the unit run the below
 
-	tftp 0x82000000 firmware.bin 0x1000000
+ tftp 0x82000000 firmware.bin 0x1000000
 
 There will be a brief pause and then you should see the progress begin and the file transfer across. This file will then be located in your /srv/tftp directory.
 
