@@ -648,7 +648,7 @@ The password can also likeley be located by searching for '*sPassword=*' utilisi
 
  __Incomplete example__
 
- Swann units all ow their config files to be exported to a USB. This file is a binary file which can be uplacked with binwalk.
+ Swann units allow their config files to be exported to a USB. This file is a binary file which can be upacked with binwalk.
 
  Strings can then be utilised to extract the username, email, and passwords from the unit along with any netowrk settings.
 
@@ -670,7 +670,7 @@ Model number __CCTV-WF-CLA-4C-4B__
 
 It is likely this method will work on other devices as many CCTV units utilise HiSilicon Hardware and U-BOOT.
 
-In the case of this model the serial ports were labelled.
+In this model the serial ports were convenientley labelled.
 
 ---
 
@@ -698,7 +698,7 @@ On your local machine start a minicom terminal. The '-c on' switch loads the col
 
 After Minicom has been started you should verify serttings to ensure it is utilising the correct serial port.
 
- Press ctrl+A then Z to bring up the menu and navigate to serial port setup and endure it matches your device.
+ Press `ctrl+A` then `Z` to bring up the menu and navigate to serial port setup and ensure it matches your device.
 
 Power on the CCTV unit and you should begin to see text flowing on the screen.
 
@@ -708,36 +708,36 @@ If text is readable and flowing you should see the unit going through its boot s
 
 Power down the unit and then re connect power and press enter repeatedly to prevent the boot process. If successful you will see the below prompt appear.
 
- hisilicon #
+ `hisilicon #`
 
 If you then enter "help" and press enter a help menu for the u-Boot loader will appear.
 
- hisilicon # help
+ `hisilicon # help`
 
-Entering 'printenv' will display settings for the unit.
+Entering `printenv` will display settings for the unit.
 
- hisilicon # printenv
+ `hisilicon # printenv`
 
 This will show the network settings from the unit, an example of which is shown below.
 
- DVR Settings
+ `DVR Settings
  netmask=255.255.255.0
  ipaddr=192.168.1.10
- serverip=192.168.1.99
+ serverip=192.168.1.99`
 
 Initialise the flash memory
 
- hisilicon # sf probe 0
+ `hisilicon # sf probe 0`
 
 The below should be displayed indicating the process was successful.
 
- 16384 KiB hi_fmc at 0:0 is now current device
+ `16384 KiB hi_fmc at 0:0 is now current device`
 
 ## Read flash into RAM
 
 This command reads 0x1000000 bytes from address 0x0 of the flash chip into RAM at address 0x82000000
 
- sf read 0x82000000 0x0 0x1000000
+ `sf read 0x82000000 0x0 0x1000000`
 
 ## Extract password from memory offset
 
@@ -745,7 +745,8 @@ The unit I tested stored the password in plaintext at this specific memory offse
 
 The command below reads 0x50 bytes (80 bytes) of data from the offset of 0x820a0010. The username 'admin' is displayed and the plaintext password is stored below.
 
- hisilicon # md 0x820a0010 50
+ `hisilicon # md 0x820a0010 50`
+
  820a0010: 00000000 00000000 696d6461 0000006e    ........admin...
  820a0020: 00000000 00000000 00000000 00000000    ................
  820a0030: 00000000 00000000 00000000 00000000    ................
@@ -804,7 +805,7 @@ Add write permissions.
 
 Back in the Minicom terminal for the unit run the below
 
- tftp 0x82000000 firmware.bin 0x1000000
+ `tftp 0x82000000 firmware.bin 0x1000000`
 
 There will be a brief pause and then you should see the progress begin and the file transfer across. This file will then be located in your /srv/tftp directory.
 
